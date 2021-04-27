@@ -12,10 +12,13 @@ function App() {
     useEffect(() => {
         fetch('http://localhost:8080/select')
             .then(res => res.json())
+            .catch(reject => console.log('Fetch Error: ', reject))
             .then(
                 (result) => {
                     console.log(result);
-                    setList(result)
+                    if(result){
+                        setList(result);
+                    }
                 }
             );
     });

@@ -9,6 +9,7 @@ const config = require('../config.json');
 const router = express.Router();
 
 app.use(cors({
+    //app origin
     origin: ['http://localhost:3000'],
     methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
     credentials: true
