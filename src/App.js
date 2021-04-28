@@ -1,7 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
-import {useEffect} from "react";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
 
 function Todo({ todo, index, completeTodo, removeTodo }) {
@@ -44,6 +42,7 @@ function TodoForm({ addTodo }) {
 function App() {
     const [todos, setTodos] = React.useState([
         {
+            id : '0',
             text: "Sample",
             isCompleted: false
         }
