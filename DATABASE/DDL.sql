@@ -1,9 +1,6 @@
-create table TEST (
-    test varchar(200)
-);
-CREATE TABLE todo (
-    id varchar(200) DEFAULT NULL,
-    text varchar(200) DEFAULT NULL,
-    isCompleted tinyint(1) DEFAULT NULL
+CREATE TABLE TODO (
+    ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    TEXT VARCHAR(200) DEFAULT NULL,
+    ISCOMPLETED TINYINT(1) DEFAULT NULL
 );
 

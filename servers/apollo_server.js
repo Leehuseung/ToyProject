@@ -6,7 +6,7 @@ const compression = require('compression');
 const config = require('../config.json');
 const mysql = require('mysql2/promise');
 
-mysql.pool = mysql.createPool({
+const pool = mysql.createPool({
     host: config.database.host,
     user: config.database.user,
     password: config.database.password,
@@ -40,59 +40,39 @@ const typeDefs = gql`
   
 `;
 
-const id = () => {
-    return Math.random().toString(36).substring(10);
-};
-
-const pool = {
-    query: async (query, value) => {
-        try {
-            var connection = await mysql.pool.getConnection(async conn => conn);
-            let [result] = value
-                ? await connection.query(query, value)
-                : (await connection.query(query)) || null;
-            connection.release();
-            return result;
-        } catch (err) {
-            console.log(err);
-            connection.rollback(() => {
-            });
-        }
-    },
-};
-
 
 let todos = {
-    get: () => {
-        return pool.query('SELECT * FROM TODO');
+    get: async () => {
+        let [result] = await pool.query('SELECT * FROM TODO');
+        return result;
     },
-    delete: (id) => {
-        pool.query('DELETE FROM TODO WHERE ID = ?', [id]);
+    delete: async (id) => {
+        await pool.query('DELETE FROM TODO WHERE ID = ?', [id]);
     },
-    add: (todo) => {
-        pool.query('INSERT INTO TODO (ID,TEXT,ISCOMPLETED) VALUES(?,?,?)', [todo.id, todo.text, todo.isCompleted]);
+    add: async (todo) => {
+        let [resultSetHeader,undefined] = await pool.query('INSERT INTO TODO (TEXT,ISCOMPLETED) VALUES(?,?)', [todo.text, todo.isCompleted]);
+        return resultSetHeader.insertId;
     },
-    update: (todo) => {
-        pool.query('UPDATE TODO SET ISCOMPLETED = ? WHERE ID = ?', [todo.isCompleted, todo.id]);
+    update: async (todo) => {
+        await pool.query('UPDATE TODO SET ISCOMPLETED = ? WHERE ID = ?', [todo.isCompleted, todo.id]);
     }
 }
 
 
 const resolvers = {
     Query: {
-        todos: () => todos.get(),
+        todos: async () => todos.get(),
     },
     Mutation: {
-        addTodo: (_, {text}) => {
+        addTodo: async (_, {text}) => {
             const todo = {
-                id: id(),
                 text: text,
                 isCompleted: false,
             };
-            todos.add(todo);
+            todo.id = await todos.add(todo);
             return todo;
         },
-        updateTodo: (_, args) => {
+        updateTodo: async (_, args) => {
             const todo = {
                 id: args.id,
                 text: args.text,
@@ -101,7 +81,7 @@ const resolvers = {
             todos.update(todo);
             return todo;
         },
-        deleteTodo: (_, {id}) => {
+        deleteTodo: async (_, {id}) => {
             todos.delete(id);
             return {id : id};
         }
