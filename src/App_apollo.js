@@ -24,23 +24,37 @@ export function Todos() {
     const {loading, error, data} = useQuery(FETCH_TODOS);
     const [addTodo] = useMutation(ADD_TODO, {
         update: (cache, {data: {addTodo}}) => {
-            const queryData = cache.readQuery({query: FETCH_TODOS});
-            const newData = {todos: [...queryData.todos, addTodo]};
-            cache.writeQuery({query: FETCH_TODOS, data: newData});
+            cache.modify({
+                fields : {
+                    todos(existing) {
+                        return [...existing, addTodo];
+                    }
+                },
+            });
         },
-        onError: (error) => console.log('UpdateError: ', error.message),
     });
     const [updateTodo] = useMutation(UPDATE_TODO, {
         update: (cache, {data: {updateTodo}}) => {
-            const queryData = cache.readQuery({query: FETCH_TODOS});
-            const newData = {todos: queryData.todos.map(t => t.id === updateTodo.id ? updateTodo : t)};
-            cache.writeQuery({query: FETCH_TODOS, data: newData});
+            cache.modify({
+                fields : {
+                    todos(existing) {
+                        return existing.map((t) => t.id === updateTodo.id ? updateTodo : t);
+                    }
+                },
+            });
         },
     });
     const [deleteTodo] = useMutation(DELETE_TODO, {
-        onError: (error) => {
-            console.log('Delete Error: ', error);
-        }
+        update: (cache, {data: {deleteTodo}}) => {
+            cache.evict({fieldName: "notifications", broadcast: false});
+            cache.modify({
+                fields : {
+                    todos(existing) {
+                        return existing.filter((t) => t.id !== deleteTodo.id);
+                    }
+                },
+            });
+        },
     });
 
 
@@ -62,15 +76,7 @@ export function Todos() {
                                 isCompleted: !todo.isCompleted
                             }
                         })}
-                        removeTodo={() => deleteTodo({
-                                variables: {id: todo.id},
-                                update: (cache) => {
-                                    const queryData = cache.readQuery({query: FETCH_TODOS});
-                                    const newData = {todos: queryData.todos.filter(t => t.id !== todo.id)};
-                                    cache.writeQuery({query: FETCH_TODOS, data: newData});
-                                },
-                            }
-                        )}
+                        removeTodo={() => deleteTodo({variables: {id: todo.id}})}
                     />
                 ))}
                 <form
@@ -90,6 +96,5 @@ export function Todos() {
             </div>
         </div>
     );
-
 
 }

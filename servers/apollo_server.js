@@ -103,6 +103,7 @@ const resolvers = {
         },
         deleteTodo: (_, {id}) => {
             todos.delete(id);
+            return {id : id};
         }
     }
 };
