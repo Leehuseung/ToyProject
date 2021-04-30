@@ -25,7 +25,7 @@ export function Todos() {
     const [addTodo] = useMutation(ADD_TODO, {
         update: (cache, {data: {addTodo}}) => {
             cache.modify({
-                fields : {
+                fields: {
                     todos(existing) {
                         return [...existing, addTodo];
                     }
@@ -36,9 +36,9 @@ export function Todos() {
     const [updateTodo] = useMutation(UPDATE_TODO, {
         update: (cache, {data: {updateTodo}}) => {
             cache.modify({
-                fields : {
-                    todos(existing) {
-                        return existing.map((t) => t.id === updateTodo.id ? updateTodo : t);
+                fields: {
+                    todos(existing, {readField}) {
+                        return existing.map((t) => readField('id', t) === updateTodo.id ? updateTodo : t);
                     }
                 },
             });
@@ -48,9 +48,9 @@ export function Todos() {
         update: (cache, {data: {deleteTodo}}) => {
             cache.evict({fieldName: "notifications", broadcast: false});
             cache.modify({
-                fields : {
-                    todos(existing) {
-                        return existing.filter((t) => t.id !== deleteTodo.id);
+                fields: {
+                    todos(existing, {readField}) {
+                        return existing.filter((t) => readField('id', t) !== deleteTodo.id);
                     }
                 },
             });
