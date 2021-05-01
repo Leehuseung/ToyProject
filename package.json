@@ -16,9 +16,7 @@
     "express": "^4.17.1",
     "graphql": "^15.5.0",
     "jsonwebtoken": "^8.5.1",
-    "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
-    "nodemon": "^2.0.7",
     "npm-run-all": "^4.1.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -28,11 +26,11 @@
   },
   "scripts": {
     "start": "npm-run-all --parallel start:**",
-    "start:client": "react-scripts start",
+    "start:client": "parcel ./public/index.html --open",
     "start:apollo_server": "node ./servers/apollo_server.js",
-    "build": "react-scripts build",
+    "build": "parcel build ./public/index.html --no-source-maps",
     "test": "npm-run-all --parallel test:**",
-    "test:client": "react-scripts start",
+    "test:client": "parcel ./public/index.html --open",
     "test:apollo_server": "nodemon ./servers/apollo_server.js",
     "eject": "react-scripts eject"
   },
@@ -53,5 +51,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7",
+    "parcel": "^2.0.0-beta.2"
   }
 }
