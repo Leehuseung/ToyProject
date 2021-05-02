@@ -22,7 +22,7 @@ export const ADD_TODO = gql`
 `;
 
 export const UPDATE_TODO = gql`
-    mutation UpdateTodo($id: ID!, $text: String!, $isCompleted: Boolean!) {
+    mutation UpdateTodo($id: ID!, $text: String!, $isCompleted: Boolean) {
       updateTodo(id: $id, text: $text, isCompleted: $isCompleted) {
         id
         text

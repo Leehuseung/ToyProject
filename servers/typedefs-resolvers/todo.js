@@ -36,8 +36,7 @@ const resolvers = {
     Mutation: {
         addTodo: async (_, {text}) => {
             const todo = {
-                text: text,
-                isCompleted: false,
+                text: text
             };
             todo.id = await todos.add(todo);
             return todo;

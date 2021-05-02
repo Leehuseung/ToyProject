@@ -1,22 +1,9 @@
 import './App.css';
 import React from "react";
-import {useMutation, useQuery, useApolloClient} from "@apollo/client";
+import {useMutation, useQuery } from "@apollo/client";
 import {ADD_TODO, DELETE_TODO, FETCH_TODOS, UPDATE_TODO} from './graphql';
+import {Todo} from './todo_component';
 
-function Todo({todo, toggleTodo, removeTodo}) {
-    return (
-        <div
-            className="todo"
-            style={{textDecoration: todo.isCompleted ? "line-through" : ""}}
-        >
-            {todo.text}, {todo.id}
-            <div>
-                <button onClick={() => toggleTodo()}>Complete</button>
-                <button onClick={() => removeTodo()}>x</button>
-            </div>
-        </div>
-    );
-}
 
 export function Todos() {
     const {loading, error, data} = useQuery(FETCH_TODOS);
@@ -77,34 +64,51 @@ export function Todos() {
                 />
                 <button type="submit">Add Todo</button>
             </form>
-            <h1>Pending Todo</h1>
-            <div className="todo-list-pending">
-                {data.todos.filter(t=>!t.isCompleted).map(todo => (
+            <h1>Pending</h1>
+            <div className="todo-list">
+                {data.todos.filter(t => t.isCompleted === null).map(todo => (
                     <Todo
-                        key = {todo.id}
+                        key={todo.id}
                         todo={todo}
-                        toggleTodo={() => updateTodo({
+                        updateTodo={(state) => updateTodo({
                             variables: {
                                 id: todo.id,
                                 text: todo.text,
-                                isCompleted: !todo.isCompleted
+                                isCompleted: state
                             }
                         })}
                         removeTodo={() => deleteTodo({variables: {id: todo.id}})}
                     />
                 ))}
             </div>
-            <h1>Completed Todo</h1>
-            <div className="todo-list-complete">
-                {data.todos.filter(t=>t.isCompleted).map(todo => (
+            <h1>Proceeding</h1>
+            <div className="todo-list">
+                {data.todos.filter(t => (t.isCompleted !== null && !t.isCompleted)).map(todo => (
                     <Todo
-                        key = {todo.id}
+                        key={todo.id}
                         todo={todo}
-                        toggleTodo={() => updateTodo({
+                        updateTodo={(state) => updateTodo({
                             variables: {
                                 id: todo.id,
                                 text: todo.text,
-                                isCompleted: !todo.isCompleted
+                                isCompleted: state
+                            }
+                        })}
+                        removeTodo={() => deleteTodo({variables: {id: todo.id}})}
+                    />
+                ))}
+            </div>
+            <h1>Completed</h1>
+            <div className="todo-list">
+                {data.todos.filter(t => (t.isCompleted !== null && t.isCompleted)).map(todo => (
+                    <Todo
+                        key={todo.id}
+                        todo={todo}
+                        updateTodo={(state) => updateTodo({
+                            variables: {
+                                id: todo.id,
+                                text: todo.text,
+                                isCompleted: state
                             }
                         })}
                         removeTodo={() => deleteTodo({variables: {id: todo.id}})}

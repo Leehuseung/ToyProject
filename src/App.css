@@ -40,14 +40,7 @@
   }
 }
 
-.todo-list-pending {
-  background: #282c34;
-  border-radius: 4px;
-  max-width: 400px;
-  padding: 5px;
-}
-
-.todo-list-complete {
+.todo-list {
   background: #282c34;
   border-radius: 4px;
   max-width: 400px;
