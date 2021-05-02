@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  background: #209cee;
+  background: #FFFACD;
   height: 100vh;
   padding: 30px;
 }
@@ -40,8 +40,15 @@
   }
 }
 
-.todo-list {
-  background: #e8e8e8;
+.todo-list-pending {
+  background: #282c34;
+  border-radius: 4px;
+  max-width: 400px;
+  padding: 5px;
+}
+
+.todo-list-complete {
+  background: #282c34;
   border-radius: 4px;
   max-width: 400px;
   padding: 5px;

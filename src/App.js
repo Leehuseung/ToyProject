@@ -1,127 +1,117 @@
 import './App.css';
-import React, {useState, useEffect} from "react"
+import React from "react";
+import {useMutation, useQuery, useApolloClient} from "@apollo/client";
+import {ADD_TODO, DELETE_TODO, FETCH_TODOS, UPDATE_TODO} from './graphql';
 
-
-function Todo({ todo, index, completeTodo, removeTodo }) {
+function Todo({todo, toggleTodo, removeTodo}) {
     return (
         <div
             className="todo"
-            style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}
+            style={{textDecoration: todo.isCompleted ? "line-through" : ""}}
         >
-            {todo.text}
+            {todo.text}, {todo.id}
             <div>
-                <button onClick={() => completeTodo(index)}>Complete</button>
-                <button onClick={() => removeTodo(index)}>x</button>
+                <button onClick={() => toggleTodo()}>Complete</button>
+                <button onClick={() => removeTodo()}>x</button>
             </div>
         </div>
     );
 }
 
-function TodoForm({ addTodo }) {
-    const [value, setValue] = React.useState("");
-
-    const handleSubmit = e => {
-        e.preventDefault();
-        if (!value) return;
-        addTodo(value);
-        setValue("");
-    };
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                className="input"
-                value={value}
-                onChange={e => setValue(e.target.value)}
-            />
-        </form>
-    );
-}
-
-function App() {
-    const [todos, setTodos] = React.useState([
-        {
-            id : '0',
-            text: "Sample",
-            isCompleted: false
-        }
-    ]);
-
-    const addTodo = text => {
-        const newTodos = [...todos, { text }];
-        setTodos(newTodos);
-    };
-
-    const completeTodo = index => {
-        const newTodos = [...todos];
-        newTodos[index].isCompleted = true;
-        setTodos(newTodos);
-    };
-
-    const removeTodo = index => {
-        const newTodos = [...todos];
-        newTodos.splice(index, 1);
-        setTodos(newTodos);
-    };
-
-    return (
-        <div className="app">
-            <div className="todo-list">
-                {todos.map((todo, index) => (
-                    <Todo
-                        key={index}
-                        index={index}
-                        todo={todo}
-                        completeTodo={completeTodo}
-                        removeTodo={removeTodo}
-                    />
-                ))}
-                <TodoForm addTodo={addTodo} />
-            </div>
-        </div>
-    );
-}
-
-/*
-function App() {
-
-    const [testList, setList] = useState([]);
-
-    let dataList;
-
-    useEffect(() => {
-        fetch('http://localhost:8080/select')
-            .then(res => res.json())
-            .catch(reject => console.log('Fetch Error: ', reject))
-            .then(
-                (result) => {
-                    console.log(result);
-                    if(result){
-                        setList(result);
+export function Todos() {
+    const {loading, error, data} = useQuery(FETCH_TODOS);
+    const [addTodo] = useMutation(ADD_TODO, {
+        update: (cache, {data: {addTodo}}) => {
+            cache.modify({
+                fields: {
+                    todos(existing) {
+                        return [...existing, addTodo];
                     }
-                }
-            );
+                },
+            });
+        },
+    });
+    const [updateTodo] = useMutation(UPDATE_TODO, {
+        update: (cache, {data: {updateTodo}}) => {
+            cache.modify({
+                fields: {
+                    todos(existing, {readField}) {
+                        return existing.map((t) => readField('id', t) === updateTodo.id ? updateTodo : t);
+                    }
+                },
+            });
+        },
+    });
+    const [deleteTodo] = useMutation(DELETE_TODO, {
+        update: (cache, {data: {deleteTodo}}) => {
+            cache.evict({fieldName: "notifications", broadcast: false});
+            cache.modify({
+                fields: {
+                    todos(existing, {readField}) {
+                        return existing.filter((t) => readField('id', t) !== deleteTodo.id);
+                    }
+                },
+            });
+        },
     });
 
 
+    if (loading) return 'Loading...';
+    if (error) return `Error! ${error.message}`;
+
+    let input;
 
     return (
         <div className="App">
-            <header className="App-header">
-                <a>select * from test</a>
-                <a>
-                    {
-                        testList.map(test => (
-                            <a>{test.test},</a>
-                        ))
-                    }
-                </a>
-            </header>
+            <form
+                onSubmit={e => {
+                    e.preventDefault();
+                    addTodo({variables: {text: input.value}});
+                    input.value = '';
+                }}
+            >
+                <input
+                    ref={node => {
+                        input = node;
+                    }}
+                />
+                <button type="submit">Add Todo</button>
+            </form>
+            <h1>Pending Todo</h1>
+            <div className="todo-list-pending">
+                {data.todos.filter(t=>!t.isCompleted).map(todo => (
+                    <Todo
+                        key = {todo.id}
+                        todo={todo}
+                        toggleTodo={() => updateTodo({
+                            variables: {
+                                id: todo.id,
+                                text: todo.text,
+                                isCompleted: !todo.isCompleted
+                            }
+                        })}
+                        removeTodo={() => deleteTodo({variables: {id: todo.id}})}
+                    />
+                ))}
+            </div>
+            <h1>Completed Todo</h1>
+            <div className="todo-list-complete">
+                {data.todos.filter(t=>t.isCompleted).map(todo => (
+                    <Todo
+                        key = {todo.id}
+                        todo={todo}
+                        toggleTodo={() => updateTodo({
+                            variables: {
+                                id: todo.id,
+                                text: todo.text,
+                                isCompleted: !todo.isCompleted
+                            }
+                        })}
+                        removeTodo={() => deleteTodo({variables: {id: todo.id}})}
+                    />
+                ))}
+            </div>
         </div>
     );
+
 }
-*/
-export default App;
-
-

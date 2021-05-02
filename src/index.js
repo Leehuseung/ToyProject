@@ -1,10 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
-import {Todos} from './App_apollo'
+import {Todos} from './App'
 
 const client = new ApolloClient({
         uri: `${location.protocol}//${location.hostname}:5050/gql`,
