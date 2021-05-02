@@ -25,9 +25,13 @@ function StateButton({onStateChanged}) {
     };
 
     const handleClose = (value) => {
-        onStateChanged(value);
         setAnchorEl(null);
     };
+
+    const onSelect = (value) => {
+        onStateChanged(value);
+        handleClose();
+    }
 
     return (
         <div>
@@ -41,9 +45,9 @@ function StateButton({onStateChanged}) {
                 open={open}
                 onClose={handleClose}
             >
-                <MenuItem onClick={() => handleClose(undefined)}>Pending</MenuItem>
-                <MenuItem onClick={() => handleClose(false)}>Proceeding</MenuItem>
-                <MenuItem onClick={() => handleClose(true)}>Completed</MenuItem>
+                <MenuItem onClick={() => onSelect(undefined)}>Pending</MenuItem>
+                <MenuItem onClick={() => onSelect(false)}>Proceeding</MenuItem>
+                <MenuItem onClick={() => onSelect(true)}>Completed</MenuItem>
             </Menu>
         </div>
     );
