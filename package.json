@@ -26,11 +26,11 @@
   },
   "scripts": {
     "start": "npm-run-all --parallel start:**",
-    "start:client": "parcel ./public/index.html --open",
-    "start:apollo_server": "node ./servers/apollo_server.js",
-    "build": "parcel build ./public/index.html --no-source-maps",
+    "start:client": "react-scripts start",
+    "start:apollo_server": "nodemon ./servers/apollo_server.js",
+    "build": "parcel build public/index.html --no-source-maps",
     "test": "npm-run-all --parallel test:**",
-    "test:client": "parcel ./public/index.html --open",
+    "test:client": "parcel public/index.html --open",
     "test:apollo_server": "nodemon ./servers/apollo_server.js",
     "eject": "react-scripts eject"
   },

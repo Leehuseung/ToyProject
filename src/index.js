@@ -5,7 +5,7 @@ import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
 import {Todos} from './App'
 
 const client = new ApolloClient({
-        uri: `${location.protocol}//${location.hostname}:5050/gql`,
+        uri: `${window.location.protocol}//${window.location.hostname}:5050/gql`,
         cache: new InMemoryCache(),
     }
 );
