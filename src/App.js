@@ -3,6 +3,7 @@ import React from "react";
 import {useMutation, useQuery } from "@apollo/client";
 import {ADD_TODO, DELETE_TODO, FETCH_TODOS, UPDATE_TODO} from './graphql';
 import {Todo} from './todo_component';
+import {Header} from './Header';
 
 
 export function Todos() {
@@ -50,6 +51,7 @@ export function Todos() {
 
     return (
         <div className="App">
+            <Header />
             <form
                 onSubmit={e => {
                     e.preventDefault();
