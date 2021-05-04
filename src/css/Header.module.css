@@ -1,0 +1,18 @@
+.header{
+    background-color: black;
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.headerTitle{
+    color: white;
+    font-size: 35px;
+    float: left;
+}
+
+.kakaoBtn{
+    cursor: pointer;
+    padding: 5px 15px 0px 0px;
+    float: right;
+    height: 40px;
+}
