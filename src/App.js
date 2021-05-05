@@ -1,15 +1,15 @@
 import './css/App.css';
 import React from "react";
-import Header from './component/Header';
 import Main from './component/Main';
+import Sidebar from './component/Sidebar';
 
 
 export default function App() {
 
     return (
         <div className="App">
-            <Header />
-            <Main />
+            <Sidebar/>
+            <Main/>
         </div>
     );
 
