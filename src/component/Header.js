@@ -1,5 +1,5 @@
-import loginImage from './img/kakaoLogin.png';
-import styles from './css/Header.module.css';
+import loginImage from '../img/kakaoLogin.png';
+import styles from '../css/Header.module.css';
 
 
 const loginWithKakao = function(r) {
@@ -19,7 +19,7 @@ const loginWithKakao = function(r) {
     })
 }
 
-export function Header(props) {
+export default function Header(props) {
     return (
       <>
         <div className={styles.header}>

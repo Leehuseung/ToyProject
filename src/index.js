@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './css/index.css';
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
-import {Todos} from './App';
+import App from './App';
 
 
 const client = new ApolloClient({
@@ -14,7 +14,7 @@ const client = new ApolloClient({
 ReactDOM.render(
     <ApolloProvider client={client}>
         <React.StrictMode>
-            <Todos/>
+            <App/>
         </React.StrictMode>,
     </ApolloProvider>,
     document.getElementById('root')
