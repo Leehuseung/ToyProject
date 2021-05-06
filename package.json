@@ -15,6 +15,7 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "graphql": "^15.5.0",
     "jsonwebtoken": "^8.5.1",
@@ -30,7 +31,7 @@
     "start": "npm-run-all --parallel start:**",
     "start:client": "react-scripts start",
     "start:apollo_server": "nodemon ./servers/apollo_server.js",
-    "build": "parcel build public/index.html --no-source-maps",
+    "build": "react-scripts build",
     "test": "npm-run-all --parallel test:**",
     "test:client": "parcel public/index.html --open",
     "test:apollo_server": "nodemon ./servers/apollo_server.js",
@@ -55,7 +56,6 @@
     ]
   },
   "devDependencies": {
-    "nodemon": "^2.0.7",
-    "parcel": "^2.0.0-beta.2"
+    "nodemon": "^2.0.7"
   }
 }

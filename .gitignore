@@ -13,6 +13,7 @@
 
 # configuration
 config.json
+.env
 
 # misc
 .DS_Store
