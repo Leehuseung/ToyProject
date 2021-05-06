@@ -12,7 +12,6 @@
 /build
 
 # configuration
-config.json
 .env
 
 # misc
