@@ -1,9 +1,8 @@
-import TodoList from './TodoList';
 import {useMutation} from "@apollo/client";
 import {ADD_TODO} from "../js/graphql/graphql";
+import React from "react";
 
-export default function TodoWrap(props) {
-
+export default function TodoInput() {
     const [addTodo] = useMutation(ADD_TODO, {
         update: (cache, {data: {addTodo}}) => {
             cache.modify({
@@ -19,7 +18,7 @@ export default function TodoWrap(props) {
     let input;
 
     return (
-        <div id="todoWrap">
+        <div id="todoInput">
             <form
                 onSubmit={e => {
                     e.preventDefault();
@@ -34,9 +33,6 @@ export default function TodoWrap(props) {
                 />
                 <button type="submit">Add Todo</button>
             </form>
-            <TodoList status="Pending"/>
-            <TodoList status="Proceeding"/>
-            <TodoList status="Completed"/>
         </div>
     );
 }

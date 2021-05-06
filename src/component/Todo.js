@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {Menu, MenuItem} from "@material-ui/core";
+import Paper from '@material-ui/core/Paper';
 
 export function Todo({todo, updateTodo, removeTodo}) {
     return (
@@ -7,11 +8,13 @@ export function Todo({todo, updateTodo, removeTodo}) {
             className="todo"
             style={{textDecoration: todo.isCompleted ? "line-through" : ""}}
         >
-            {todo.text}, {todo.id}
-            <div>
-                <StateButton onStateChanged={(state)=>updateTodo(state)}/>
-                <button onClick={() => removeTodo()}>x</button>
-            </div>
+            <Paper>
+                {todo.text}, {todo.id}
+                <div>
+                    <StateButton onStateChanged={(state) => updateTodo(state)}/>
+                    <button onClick={() => removeTodo()}>x</button>
+                </div>
+            </Paper>
         </div>
     );
 }
@@ -24,7 +27,7 @@ function StateButton({onStateChanged}) {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = (value) => {
+    const handleClose = () => {
         setAnchorEl(null);
     };
 
@@ -36,7 +39,7 @@ function StateButton({onStateChanged}) {
     return (
         <div>
             <button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                Chane State
+                Change State
             </button>
             <Menu
                 id="simple-menu"
