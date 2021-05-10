@@ -12,8 +12,8 @@ export const FETCH_TODOS = gql`
 `;
 
 export const ADD_TODO = gql`
-    mutation AddTodos($text: String!) {
-      addTodo(text: $text) {
+    mutation AddTodos($text: String!, $isCompleted: Boolean) {
+      addTodo(text: $text, isCompleted: $isCompleted) {
         id
         text
         isCompleted

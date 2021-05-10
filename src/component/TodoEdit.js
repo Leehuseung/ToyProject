@@ -16,7 +16,7 @@ export function NewTodoButton() {
     return (
         <div id="todoInput">
             <button onClick={toggle}>NewTODO</button>
-            <EditTodoDialog open={show} updateModalState={toggle} todo={{id: null}}/>
+            <EditTodoDialog open={show} toggle ={toggle} todo={{id: null}}/>
         </div>
     );
 }
@@ -80,6 +80,7 @@ export function EditTodoDialog(props) {
                         </Button>
                         <Button
                             onClick={() => {
+                                console.log(editingTodo);
                                 updateTodo(editingTodo);
                                 props.toggle();
                             }}

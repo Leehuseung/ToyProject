@@ -34,9 +34,10 @@ const resolvers = {
         todos: async () => todos.get(),
     },
     Mutation: {
-        addTodo: async (_, {text}) => {
+        addTodo: async (_, args) => {
             const todo = {
-                text: text
+                text: args.text,
+                isCompleted: args.isCompleted,
             };
             todo.id = await todos.add(todo);
             return todo;
