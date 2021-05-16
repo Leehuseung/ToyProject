@@ -15,7 +15,7 @@ export function NewTodoButton() {
 
     return (
         <div id="todoInput">
-            <button onClick={toggle}>NewTODO</button>
+            <Button variant="contained" color="secondary" onClick={toggle}>NewTODO</Button>
             <EditTodoDialog open={show} toggle ={toggle} todo={{id: null}}/>
         </div>
     );
@@ -128,9 +128,9 @@ function TodoState(props) {
 
     return (
         <div>
-            <button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
+            <Button variant="contained" color="primary" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
                 {checkStatus}
-            </button>
+            </Button>
             <Menu
                 id="simple-menu"
                 anchorEl={anchorEl}

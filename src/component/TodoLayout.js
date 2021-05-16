@@ -4,14 +4,18 @@ import {useQuery} from "@apollo/client";
 import {FETCH_TODOS} from "../js/graphql/graphql";
 import {NewTodoButton} from "./TodoEdit";
 import {Todo} from "./Todo";
+import {useDrop} from "react-dnd";
+import TodoList from './TodoList';
 
 
 export default function TodoLayout() {
-    const {loading, error, data} = useQuery(FETCH_TODOS);
-    if (loading) return 'Loading...';
-    if (error) return `Error! ${error.message}`;
 
-    let grouped = groupByStatus(data.todos);
+
+    // const {loading, error, data} = useQuery(FETCH_TODOS);
+    // if (loading) return 'Loading...';
+    // if (error) return `Error! ${error.message}`;
+
+    let grouped = groupByStatus();
     let keys = Array.from(grouped.keys());
 
     return (
@@ -21,19 +25,8 @@ export default function TodoLayout() {
                 {
                     keys.map(key => (
                         <Grid item xs={12 / keys.length}>
-                            <h1>{key}</h1>
-                            <div className="todo-list">
-                                {
-                                    grouped.get(key).map(todo => (
-                                        <div>
-                                            <Todo
-                                                key={todo.id}
-                                                todo={todo}
-                                            />
-                                        </div>
-                                    ))
-                                }
-                            </div>
+                            <h1 style={{textAlign: "center"}}>{key}</h1>
+                            <TodoList type={key}/>
                         </Grid>
                     ))
                 }
@@ -42,21 +35,11 @@ export default function TodoLayout() {
     );
 }
 
-function groupByStatus(todos) {
+function groupByStatus() {
     let result = new Map();
     result.set("Pending", []);
     result.set("Proceeding", []);
     result.set("Completed", []);
 
-    todos.forEach((todo) => {
-        let status = todo.isCompleted;
-        if (status === undefined || status === null) {
-            result.get("Pending").push(todo);
-        } else if (status) {
-            result.get("Completed").push(todo);
-        } else {
-            result.get("Proceeding").push(todo);
-        }
-    });
     return result;
 }

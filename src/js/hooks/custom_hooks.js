@@ -39,7 +39,7 @@ export function useUpdate() {
 }
 
 export function useDelete() {
-    const remove = (id) => deleteTodo({variables: id});
+    const remove = (id) => deleteTodo({variables: {id:id}});
 
     const [deleteTodo] = useMutation(DELETE_TODO, {
         update: (cache, {data: {deleteTodo}}) => {
