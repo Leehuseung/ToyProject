@@ -34,7 +34,6 @@ export function useUpdate() {
             });
         },
     });
-
     return updateTodo;
 }
 
@@ -53,7 +52,6 @@ export function useDelete() {
             });
         },
     });
-
     return remove;
 }
 

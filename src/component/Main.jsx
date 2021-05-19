@@ -17,7 +17,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import TodoLayout from "./TodoLayout";
+import TodoLayout from "./TodoLayout.jsx";
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { DndProvider } from 'react-dnd'
 
 const drawerWidth = 240;
 
@@ -154,7 +156,11 @@ export default function Main() {
                 })}
             >
                 <div className={classes.drawerHeader} />
-                <TodoLayout />
+
+                <DndProvider backend={HTML5Backend}>
+                    <TodoLayout />
+                </DndProvider>
+
             </main>
         </div>
     );

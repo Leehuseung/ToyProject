@@ -1,9 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
-import Main from "./component/Main";
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { DndProvider } from 'react-dnd'
+import Main from "./component/Main.jsx";
 
 const client = new ApolloClient({
         uri: `${window.location.protocol}//${window.location.hostname}:5050/gql`,
@@ -14,11 +12,9 @@ const client = new ApolloClient({
 ReactDOM.render(
     <ApolloProvider client={client}>
         <React.StrictMode>
-            <DndProvider backend={HTML5Backend}>
-                <div className="App">
-                    <Main/>
-                </div>
-            </DndProvider>
+            <div className="App">
+                <Main/>
+            </div>
         </React.StrictMode>
     </ApolloProvider>,
     document.getElementById('root')

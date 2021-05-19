@@ -24,7 +24,7 @@ let todos = {
         return resultSetHeader.insertId;
     },
     update: async (todo) => {
-        await pool.query('UPDATE TODO SET ISCOMPLETED = ? WHERE ID = ?', [todo.isCompleted, todo.id]);
+        await pool.query('UPDATE TODO SET ISCOMPLETED = ?,TEXT = ? WHERE ID = ?', [todo.isCompleted, todo.text ,todo.id]);
     }
 }
 

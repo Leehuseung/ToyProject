@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import {Menu, MenuItem} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {useDialog, useTodo, useUpdate} from "../js/hooks/custom_hooks";
+import {stateType} from "./stateType";
 
 
 export function NewTodoButton() {
@@ -20,7 +21,6 @@ export function NewTodoButton() {
         </div>
     );
 }
-
 
 export function EditTodoDialog(props) {
     const updateTodo = useUpdate();
@@ -118,11 +118,11 @@ function TodoState(props) {
 
     const checkStatus = ((status) => {
         if (status === undefined || status === null) {
-            return 'Pending';
+            return stateType.PENDING;
         } else if (status) {
-            return 'Completed';
+            return stateType.COMPLETED;
         } else {
-            return 'Proceeding';
+            return stateType.PROCEEDING;
         }
     })(props.todo.isCompleted);
 

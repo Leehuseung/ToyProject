@@ -1,17 +1,17 @@
 import React from "react";
 import Paper from '@material-ui/core/Paper';
-import {EditTodoDialog} from "./TodoEdit";
+import {EditTodoDialog} from "./TodoEdit.jsx";
 import {useDelete, useDialog, useTodo, useUpdate} from "../js/hooks/custom_hooks";
 import { makeStyles } from "@material-ui/core/styles";
 import ClearIcon from '@material-ui/icons/Clear';
 import { useDrag } from 'react-dnd';
-import {useState} from "react";
 
 
-export function Todo({todo}) {
+export function Todo(props) {
+    let todo = props.todo;
+
     const [show, toggle] = useDialog();
     const removeTodo = useDelete();
-
     const updateTodo = useUpdate();
 
     const customPaperStyles = makeStyles({
@@ -30,38 +30,17 @@ export function Todo({todo}) {
         }
     });
 
-    let type = '';
-
-    if(todo.isCompleted == null || typeof todo.isCompleted == 'undefined'){
-        type = 'Pending';
-    }else if(!todo.isCompleted){
-        type = 'Proceeding';
-    } else {
-        type = 'Completed';
-    }
-
     const [{ isDragging }, drag] = useDrag(() => ({
-        type: type,
+        type: props.type,
         item: { todo },
         end: (item, monitor) => {
-
             const dropResult = monitor.getDropResult();
-
             if (item && dropResult) {
-                let flag = null;
-
-                if(dropResult.name == 'Proceeding'){
-                    flag = false;
-                } else if (dropResult.name == 'Completed'){
-                    flag = true;
-                }
-
                 updateTodo({
                     id: todo.id,
                     text: todo.text,
-                    isCompleted: flag,
+                    isCompleted: dropResult.name,
                 });
-
             }
         },
         collect: (monitor) => ({
@@ -83,7 +62,6 @@ export function Todo({todo}) {
                     e.stopPropagation();
                     removeTodo(todo.id);
                 }}/>
-                {/*<button  className={customPaperStyles().removeBtn} onClick={()=>removeTodo(todo.id)}>x</button>*/}
             </Paper>
             <EditTodoDialog open={show} toggle = {toggle} todo={todo}/>
         </div>
