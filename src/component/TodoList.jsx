@@ -19,18 +19,10 @@ export default function TodoList(props) {
             break;
     }
 
-    function checkStatus(type){
-        switch (props.type){
-            case stateType.PENDING : return null;
-            case stateType.PROCEEDING : return false;
-            case stateType.COMPLETED : return true;
-        }
-    }
-
     const [{ canDrop, isOver }, drop] = useDrop(() => ({
         // The type (or types) to accept - strings or symbols
         accept: accepts,
-        drop: () => ({ name: checkStatus(props.type) }),
+        drop: () => ({ name: stateType.checkType(props.type) }),
         // Props to collect
         collect: (monitor) => ({
             isOver: monitor.isOver(),

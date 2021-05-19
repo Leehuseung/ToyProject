@@ -116,20 +116,10 @@ function TodoState(props) {
         handleClose();
     }
 
-    const checkStatus = ((status) => {
-        if (status === undefined || status === null) {
-            return stateType.PENDING;
-        } else if (status) {
-            return stateType.COMPLETED;
-        } else {
-            return stateType.PROCEEDING;
-        }
-    })(props.todo.isCompleted);
-
     return (
         <div>
             <Button variant="contained" color="primary" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                {checkStatus}
+                {stateType.checkStatus(props.todo.isCompleted)}
             </Button>
             <Menu
                 id="simple-menu"
