@@ -2,14 +2,17 @@ export const stateType = {
     PENDING: 'Pending',
     PROCEEDING: 'Proceeding',
     COMPLETED: 'Completed',
-    checkType: (type) => {
+    keys : ['Pending', 'Proceeding', 'Completed'],
+    fromType: (type) => {
         switch (type){
-            case stateType.PENDING : return null;
             case stateType.PROCEEDING : return false;
             case stateType.COMPLETED : return true;
+            case stateType.PENDING : return null;
+            default:
+                return undefined;
         }
     },
-    checkStatus: (status) => {
+    getType: (status) => {
         if (status === undefined || status === null) {
             return stateType.PENDING;
         } else if (status) {
@@ -17,5 +20,5 @@ export const stateType = {
         } else {
             return stateType.PROCEEDING;
         }
-    }
+    },
 }

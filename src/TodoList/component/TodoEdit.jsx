@@ -7,12 +7,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {Menu, MenuItem} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import {useDialog, useTodo, useUpdate} from "../js/hooks/custom_hooks";
-import {stateType} from "./stateType";
+import {useModal, useUpdate} from "../js/hooks";
+import {stateType} from "../js/stateType";
 
 
 export function NewTodoButton() {
-    const [show, toggle] = useDialog();
+    const [show, toggle] = useModal();
 
     return (
         <div id="todoInput">
@@ -24,7 +24,7 @@ export function NewTodoButton() {
 
 export function EditTodoDialog(props) {
     const updateTodo = useUpdate();
-    const [editingTodo, editTodo] = useTodo(props.todo);
+    const [editingTodo, editTodo] = useState(props.todo);
 
     if (props.open) {
         return (
@@ -72,7 +72,6 @@ export function EditTodoDialog(props) {
                                     todo={editingTodo}/>
                             </Grid>
                         </Grid>
-
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={()=>props.toggle()} color="primary">
@@ -119,7 +118,7 @@ function TodoState(props) {
     return (
         <div>
             <Button variant="contained" color="primary" aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-                {stateType.checkStatus(props.todo.isCompleted)}
+                {stateType.getType(props.todo.isCompleted)}
             </Button>
             <Menu
                 id="simple-menu"

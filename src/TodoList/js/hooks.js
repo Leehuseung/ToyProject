@@ -1,6 +1,11 @@
-import {useMutation} from "@apollo/client";
-import {ADD_TODO, DELETE_TODO, UPDATE_TODO} from "../graphql/graphql";
-import React, {useState} from "react";
+import {useMutation, useQuery} from "@apollo/client";
+import {ADD_TODO, DELETE_TODO, FETCH_TODOS, UPDATE_TODO} from "./graphql";
+import {useState} from "react";
+
+export function useFetch() {
+    const {loading, error, data} = useQuery(FETCH_TODOS);
+    return {loading, error, data};
+}
 
 export function useUpdate() {
     const updateTodo = (todo) => {
@@ -56,18 +61,7 @@ export function useDelete() {
 }
 
 
-export function useTodo(initialTodo) {
-    ///use cached todo object
-    const [state, setState] = useState(initialTodo);
-
-    function modifyTodo(todo) {
-        setState(todo);
-    }
-
-    return [state, modifyTodo];
-}
-
-export function useDialog () {
+export function useModal () {
     const [showModal, updateShowModal] = useState(false);
     const toggleModal = () => updateShowModal(state=>!state);
 

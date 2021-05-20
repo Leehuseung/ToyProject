@@ -1,7 +1,7 @@
 import React from "react";
 import Paper from '@material-ui/core/Paper';
 import {EditTodoDialog} from "./TodoEdit.jsx";
-import {useDelete, useDialog, useTodo, useUpdate} from "../js/hooks/custom_hooks";
+import {useDelete, useModal, useUpdate} from "../js/hooks";
 import { makeStyles } from "@material-ui/core/styles";
 import ClearIcon from '@material-ui/icons/Clear';
 import { useDrag } from 'react-dnd';
@@ -10,7 +10,7 @@ import { useDrag } from 'react-dnd';
 export function Todo(props) {
     let todo = props.todo;
 
-    const [show, toggle] = useDialog();
+    const [show, toggle] = useModal();
     const removeTodo = useDelete();
     const updateTodo = useUpdate();
 
@@ -54,7 +54,6 @@ export function Todo(props) {
             style={{textDecoration: todo.isCompleted ? "line-through" : "", opacity: isDragging ? 0.5 : 1}}
             id={todo.id}
             ref={drag}
-            role="todo"
         >
             <Paper className={customPaperStyles().todo} onClick={toggle}>
                 {todo.text}, {todo.id}

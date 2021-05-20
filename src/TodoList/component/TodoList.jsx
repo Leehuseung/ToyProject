@@ -1,28 +1,14 @@
 import {Todo} from "./Todo.jsx";
 import React from "react";
 import {useDrop} from "react-dnd";
-import {stateType} from "./stateType";
+import {stateType} from "../js/stateType";
 
 export default function TodoList(props) {
 
-    let accepts = [];
-
-    switch (props.type){
-        case stateType.PENDING :
-            accepts = [stateType.PROCEEDING,stateType.COMPLETED];
-            break;
-        case stateType.PROCEEDING :
-            accepts = [stateType.PENDING,stateType.COMPLETED];
-            break;
-        case stateType.COMPLETED :
-            accepts = [stateType.PENDING,stateType.PROCEEDING];
-            break;
-    }
-
-    const [{ canDrop, isOver }, drop] = useDrop(() => ({
+    const [{isOver}, drop] = useDrop(() => ({
         // The type (or types) to accept - strings or symbols
-        accept: accepts,
-        drop: () => ({ name: stateType.checkType(props.type) }),
+        accept: props.accepts,
+        drop: () => ({ name: stateType.fromType(props.type) }),
         // Props to collect
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -32,7 +18,7 @@ export default function TodoList(props) {
 
     return (
         <div className="todo-list"
-             id={props.key}
+             id={props.type}
              ref={drop}
              style={{ backgroundColor: isOver ? '#3f51b5' : '' }}
         >
