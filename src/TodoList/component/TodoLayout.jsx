@@ -12,7 +12,9 @@ export default function TodoLayout() {
     let grouped = groupByStatus(data.todos);
 
     return (
-        <div id="todoLayout">
+        <div id="todoLayout"
+             style={{marginTop:'60px'}}
+        >
             <NewTodoButton/>
             <Grid container spacing={3}>
                 {

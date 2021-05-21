@@ -24,6 +24,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
+import WaitingRoom from "./omok/component/WaitingRoom";
 
 
 export const drawerWidth = 240;
@@ -117,7 +118,9 @@ const routes = [
         path: "/omok",
         text: "오목",
         icon: () => <SportsEsports/>,
-        render: () => <h2>OMOK</h2>
+        render: () => (
+            <WaitingRoom/>
+        )
     }
 ];
 

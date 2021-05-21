@@ -20,7 +20,7 @@ export default function TodoList(props) {
         <div className="todo-list"
              id={props.type}
              ref={drop}
-             style={{ backgroundColor: isOver ? '#3f51b5' : '' }}
+             style={{ backgroundColor: isOver ? '#87CEFA' : '' , minHeight:'500px'}}
         >
             {
                 props.todos.map(todo => (
