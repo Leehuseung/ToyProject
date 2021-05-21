@@ -13,7 +13,7 @@ export default function TodoLayout() {
 
     return (
         <div id="todoLayout"
-             style={{marginTop:'60px'}}
+             style={{marginTop:'60px',padding:'20px'}}
         >
             <NewTodoButton/>
             <Grid container spacing={3}>

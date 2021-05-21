@@ -24,7 +24,8 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import WaitingRoom from "./omok/component/WaitingRoom";
+import Room from "./omok/component/Room";
+import OmokMain from "./omok/component/OmokMain.jsx";
 
 
 export const drawerWidth = 240;
@@ -58,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     },
     content: {
         flexGrow: 1,
-        padding: theme.spacing(3),
+        padding: '0px',
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -119,7 +120,7 @@ const routes = [
         text: "오목",
         icon: () => <SportsEsports/>,
         render: () => (
-            <WaitingRoom/>
+            <OmokMain/>
         )
     }
 ];
