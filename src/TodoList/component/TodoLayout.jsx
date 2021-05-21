@@ -36,6 +36,9 @@ export default function TodoLayout() {
 
 function groupByStatus(todos) {
     let result = new Map();
+    result.set(stateType.PROCEEDING ,[]);
+    result.set(stateType.PENDING ,[]);
+    result.set(stateType.COMPLETED ,[]);
     todos.forEach((todo) => {
         let type = stateType.getType(todo.isCompleted);
         let items = result.get(type);
