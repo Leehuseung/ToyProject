@@ -1,25 +1,13 @@
-const {ApolloServer, gql} = require('apollo-server-express');
+const {ApolloServer} = require('apollo-server-express');
 const express = require('express');
 const cors = require('cors');
 const {bodyParserGraphQL} = require('body-parser-graphql');
 const compression = require('compression');
-const queries = require('./typedefs-resolvers/_queries');
-const mutaions = require('./typedefs-resolvers/_mutations');
-const todo = require('./typedefs-resolvers/todo.js');
+const {resolvers} = require("./typedefs-resolvers/resolvers");
+const {typeDefs} = require("./typedefs-resolvers/typedefs");
 
 const port = 5050;
 const app = express();
-
-
-const typeDefs = [
-    queries,
-    mutaions,
-    todo.typeDefs
-];
-
-const resolvers = [
-    todo.resolvers
-];
 
 const server = new ApolloServer({
     typeDefs,
