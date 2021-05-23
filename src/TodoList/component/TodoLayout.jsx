@@ -7,14 +7,16 @@ import {useFetch} from "../js/hooks";
 export default function TodoLayout() {
     const {loading, error, data} = useFetch();
     if (loading) return 'Loading...';
-    if (error) return `Error! ${error.message}`;
+    if (error) return (
+        <div id="todoLayout">
+            `Error! {error.message}`;
+        </div>
+    );
 
     let grouped = groupByStatus(data.todos);
 
     return (
-        <div id="todoLayout"
-             style={{marginTop:'60px',padding:'20px'}}
-        >
+        <div id="todoLayout">
             <NewTodoButton/>
             <Grid container spacing={3}>
                 {
@@ -38,13 +40,13 @@ export default function TodoLayout() {
 
 function groupByStatus(todos) {
     let result = new Map();
-    result.set(stateType.PROCEEDING ,[]);
-    result.set(stateType.PENDING ,[]);
-    result.set(stateType.COMPLETED ,[]);
+    result.set(stateType.PROCEEDING, []);
+    result.set(stateType.PENDING, []);
+    result.set(stateType.COMPLETED, []);
     todos.forEach((todo) => {
         let type = stateType.getType(todo.isCompleted);
         let items = result.get(type);
-        if(items){
+        if (items) {
             items.push(todo);
         } else {
             result.set(type, [todo]);

@@ -27,7 +27,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 import OmokMain from "./Omok/component/OmokMain.jsx";
 
 
-export const drawerWidth = 240;
+const drawerWidth = 240;
+const appBarHeight = 60;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
+        height : appBarHeight,
     },
     title: {
         flexGrow: 1,
@@ -64,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
         marginLeft: -drawerWidth,
+        marginTop: appBarHeight,
     },
     contentShift: {
         transition: theme.transitions.create('margin', {

@@ -33,7 +33,7 @@ export default function OmokMain() {
 
     return (
         <>
-            <div style={{paddingTop: '64px', display: 'grid', gridTemplateColumns: '2fr 1fr'}}
+            <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr'}}
             >
                 <div className='roomWrap' style={{maxHeight: height, overflowY: 'auto', marginLeft: '30px'}}>
                     {
