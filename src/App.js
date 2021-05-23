@@ -25,6 +25,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import OmokMain from "./Omok/component/OmokMain.jsx";
+import socketio from "socket.io-client";
 
 
 const drawerWidth = 240;
@@ -126,6 +127,17 @@ const routes = [
         )
     }
 ];
+
+export const socket = socketio.connect('http://localhost:5000');
+
+(() => {
+    socket.emit('init', { name: '새로 누군가 들어옴' });
+
+    socket.on('welcome', (msg) => {
+        console.log(msg);
+    });
+
+})();
 
 export default function App() {
     const classes = useStyles();

@@ -28,14 +28,17 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "request": "^2.88.2",
-    "web-vitals": "^1.1.1"
+    "socket.io": "^4.1.2",
+    "socket.io-client": "^4.1.2",
+    "web-vitals": "^1.1.1",
+    "ws": "^7.4.5"
   },
   "scripts": {
     "start": "npm-run-all --parallel start:**",
     "start:client": "react-scripts start",
     "start:apollo_server": "nodemon ./servers/apollo_server.js",
     "build": "react-scripts build",
-    "test": "npm-run-all --parallel test:**",
+    "test": "react-scripts test",
     "test:client": "parcel public/index.html --open",
     "test:apollo_server": "nodemon ./servers/apollo_server.js",
     "eject": "react-scripts eject"

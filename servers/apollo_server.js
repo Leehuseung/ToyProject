@@ -5,6 +5,7 @@ const {bodyParserGraphQL} = require('body-parser-graphql');
 const compression = require('compression');
 const {resolvers} = require("./typedefs-resolvers/resolvers");
 const {typeDefs} = require("./typedefs-resolvers/typedefs");
+const webSocket = require('./socket');
 
 const port = 5050;
 const app = express();
@@ -31,3 +32,6 @@ app.use(compression);
 app.listen(port, () => {
     console.log(`🚀 Server ready at http://localhost:${port} / ${server.graphqlPath}`);
 });
+
+webSocket();
+
