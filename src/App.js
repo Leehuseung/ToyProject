@@ -24,8 +24,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import Room from "./omok/component/Room";
-import OmokMain from "./omok/component/OmokMain.jsx";
+import OmokMain from "./Omok/component/OmokMain.jsx";
 
 
 export const drawerWidth = 240;

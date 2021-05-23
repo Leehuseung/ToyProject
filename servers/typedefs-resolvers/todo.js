@@ -7,8 +7,6 @@ const typeDefs = gql`
     text: String!
     isCompleted: Boolean
   }
-  
-
 `;
 
 let todos = {

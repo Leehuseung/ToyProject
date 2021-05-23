@@ -25,7 +25,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function Room() {
+export default function OmokRoom(props) {
     const classes = useStyles();
     const bull = <span className={classes.bullet}>•</span>;
 
@@ -33,13 +33,13 @@ export default function Room() {
         <Card className={classes.root} >
             <CardContent>
                 <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    1
+                    {props.id}
                 </Typography>
                 <Typography variant="h5" component="h2">
-                    방제목
+                    {props.title}
                 </Typography>
                 <Typography className={classes.pos} color="textSecondary">
-                    GEUST1242
+                    {props.user.name}
                 </Typography>
             </CardContent>
             <CardActions>
