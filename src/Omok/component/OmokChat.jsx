@@ -1,29 +1,91 @@
-import {useState, useEffect} from "react";
-import {chatSocket} from "../js/socket"
+import {useState, useEffect, useRef} from "react";
 import {makeStyles} from "@material-ui/core/styles";
+import {useChatting} from "../js/hooks";
 
 const useStyles = makeStyles((theme) => ({
-    chatArea: {
-        backgroundColor: "skyblue",
-        maxHeight: 600,
-        marginTop: 30,
+    container: {
+        display: "flex",
+        flexDirection: "column",
+        border: "3px solid black",
+        height: "90vh",
     },
-    chatTextSpan: {
+    chatArea: {
         padding: 10,
+        backgroundColor: "white",
+        flex: 1,
         whiteSpace: "pre-line",
-    }
+    },
+    chatInput: {
+        display: "flex",
+        flexDirection: "row",
+    },
+    textArea: {
+        flex: 1
+    },
+    inputButton: {}
 }));
 
 export default function OmokChat(props) {
     const classes = useStyles();
-    let [inputText, setInputText] = useState('');
-    let [textdiv, setTextDiv] = useState('');
+    const id = useRef(Math.floor(Math.random() * 100));
+
+    const [logs, sendMessage] = useChatting(id.current, props.room);
+    const [inputText, setInputText] = useState('');
+
+    useEffect(()=>{
+        setInputText('');
+    },[logs])
+
+    const onChange = (e) => {
+        if (e.target.value !== '\n') {
+            setInputText(e.target.value);
+        }
+    }
+
+    const handleKeyPress = (evt) => {
+        console.log(evt.key);
+        if (evt.key === 'Enter') {
+            sendMessage(inputText);
+        }
+    };
+
+    return (
+        <div className={classes.container}>
+            <div className={classes.chatArea}>
+                <h2>{props.title}</h2>
+                <span>{logs}</span>
+            </div>
+            <div className={classes.chatInput}>
+                <textarea
+                    className={classes.textArea}
+                    value={inputText}
+                    onChange={onChange}
+                    onKeyPress={handleKeyPress}
+                />
+                <button className={classes.inputButton}
+                        onClick={()=>sendMessage(inputText)}
+                >
+                    Enter
+                </button>
+            </div>
+        </div>
+    );
+}
+/*
+export default function OmokChat(props) {
+    const classes = useStyles();
+    const id = useRef(Math.floor(Math.random() * 100));
+    const [user, setUser] = useState(User(id.current, `Guest ${id.current}`));
+
+    const [inputText, setInputText] = useState('');
+    const [textdiv, setTextDiv] = useState('');
 
     useEffect(() => {
-        chatSocket.emit('init', {name: `${props.user.name} entered the chat room`});
+        setUser(User(id.current, `Guest ${id.current}`));
+        chatSocket.emit('join', {room: props.room, name: user.name});
 
         chatSocket.on('announce', (msg) => {
-            setTextDiv(prevState => prevState + `[ ${msg} ]` + '\n');
+            setTextDiv(prevState => prevState + `[ ${msg} ]\n`);
         });
 
         chatSocket.on('res', (data) => {
@@ -32,15 +94,16 @@ export default function OmokChat(props) {
         });
 
         return () => {
-            chatSocket.emit('leave', {name: `${props.user.name} leaved the chat room`})
+            chatSocket.emit('leave', {room:props.room, name: user.name})
             chatSocket.removeAllListeners();
         }
-    }, [props.user.name]);
+    }, [user.name, props.room]);
 
     const sendMessage = () => {
         if (inputText.length > 0) {
             chatSocket.emit('chat', {
-                name: props.user.name,
+                room: props.room,
+                name: user.name,
                 message: inputText,
             });
         }
@@ -59,17 +122,24 @@ export default function OmokChat(props) {
     };
 
     return (
-        <div className={classes.chatArea}>
-            <h2>채팅영역</h2>
-            <div className={classes.chatTextSpan}>
+        <div className={classes.container}>
+            <div className={classes.chatArea}>
+                <h2>{props.title}</h2>
                 <span>{textdiv}</span>
             </div>
-            <textarea className='chatTextArea'
-                      value={inputText}
-                      onChange={onChange}
-                      onKeyPress={handleKeyPress}
-            />
-            <button onClick={sendMessage}>enter</button>
+            <div className={classes.chatInput}>
+                <textarea
+                    className={classes.textArea}
+                    value={inputText}
+                    onChange={onChange}
+                    onKeyPress={handleKeyPress}
+                />
+                <button className={classes.inputButton}
+                        onClick={sendMessage}
+                >
+                    Enter
+                </button>
+            </div>
         </div>
     );
-}
+}*/

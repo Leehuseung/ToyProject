@@ -1,11 +1,10 @@
-import OmokRoom from "./OmokRoom";
-import React, {useState} from "react";
-import {useEffect} from "react";
+import {useState, useEffect} from "react";
 import {Room, User} from "../js/models";
 import OmokChat from "./OmokChat";
+import OmokRoomCard from "./OmokRoomCard";
 
 const getWrapperSize = () => {
-    return (window.innerHeight - 64) + 'px'
+    return (window.innerHeight) + 'px'
 }
 
 const roomList = [
@@ -17,9 +16,6 @@ const roomList = [
 ];
 
 export default function OmokMain() {
-    const id = Math.floor(Math.random()*100);
-    const user = User(id, `Guest ${id}`);
-
     const refreshHeight = () => {
         setHeight(getWrapperSize());
     }
@@ -35,20 +31,24 @@ export default function OmokMain() {
 
     return (
         <>
-            <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr'}}
+            <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', margin: '30px'}}
             >
-                <div className='roomWrap' style={{maxHeight: height, overflowY: 'auto', marginLeft: '30px'}}>
+                <div className='roomWrap' style={{maxHeight: height, overflowY: 'auto'}}>
                     {
                         roomList.map(room => (
-                                <OmokRoom key={room.id}
-                                          title={room.title}
-                                          user={room.user}
+                                <OmokRoomCard key={room.id}
+                                              id={room.id}
+                                              title={room.title}
+                                              user={room.user}
                                 />
                             )
                         )
                     }
                 </div>
-                <OmokChat user={user}/>
+                <OmokChat
+                    title="대기실"
+                    room='lobby'
+                />
             </div>
         </>
     );

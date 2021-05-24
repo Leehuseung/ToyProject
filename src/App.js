@@ -6,21 +6,18 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import TodoLayout from "./TodoList/component/TodoLayout.jsx";
-import {HTML5Backend} from 'react-dnd-html5-backend'
-import {DndProvider} from 'react-dnd'
 import loginImage from "./img/kakaoLogin.png";
 import {loginWithKakao} from "./TodoList/js/auth";
 import {useModal} from "./TodoList/js/hooks";
 import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
-import {ListAlt, SportsEsports, Home, Menu, ChevronLeft, ChevronRight} from "@material-ui/icons";
+import {Menu, ChevronLeft, ChevronRight} from "@material-ui/icons";
 import Drawer from "@material-ui/core/Drawer";
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import OmokMain from "./Omok/component/OmokMain.jsx";
+import {routes} from "./routes";
 
 
 const drawerWidth = 240;
@@ -94,35 +91,6 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'flex-end',
     },
 }));
-
-const routes = [
-    {
-        path: "/",
-        exact: true,
-        text: "Home",
-        icon: () => <Home/>,
-        render: () => <h2>HOME</h2>
-    },
-    {
-        path: "/todolist",
-        text: "Todo List",
-        icon: () => <ListAlt/>,
-        render: () => (
-            <DndProvider backend={HTML5Backend}>
-                <TodoLayout/>
-            </DndProvider>
-        )
-    },
-    {
-        path: "/omok",
-        text: "오목",
-        icon: () => <SportsEsports/>,
-        render: () => (
-            <OmokMain/>
-        )
-    }
-];
-
 
 export default function App() {
     const classes = useStyles();

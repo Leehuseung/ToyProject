@@ -1,21 +1,12 @@
-import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import OmokChat from "./OmokChat";
+import {useGameRoom} from "../js/hooks";
 
 const useStyles = makeStyles({
-    root: {
+    room: {
         minWidth: 275,
-        marginTop: '30px',
-        width: '95%'
-    },
-    bullet: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
+        width: '95%',
+        marginBottom: 20,
     },
     title: {
         fontSize: 14,
@@ -28,22 +19,23 @@ const useStyles = makeStyles({
 export default function OmokRoom(props) {
     const classes = useStyles();
 
+    const room = useGameRoom(props.id);
+    if(room===null) {
+        return <>Loading...</>
+    }
+
     return (
-        <Card className={classes.root} >
-            <CardContent>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    {props.id}
-                </Typography>
-                <Typography variant="h5" component="h2">
-                    {props.title}
-                </Typography>
-                <Typography className={classes.pos} color="textSecondary">
-                    {props.user.name}
-                </Typography>
-            </CardContent>
-            <CardActions>
-                <Button size="small">입장</Button>
-            </CardActions>
-        </Card>
+        <>
+            <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', margin: '30px'}}
+            >
+                <div className={classes.room}>
+                   <h2>오목판</h2>
+                </div>
+                <OmokChat
+                    title={room.title}
+                    room={props.id}
+                />
+            </div>
+        </>
     );
 }
