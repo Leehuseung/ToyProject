@@ -27,7 +27,6 @@ const useStyles = makeStyles({
 
 export default function OmokRoom(props) {
     const classes = useStyles();
-    const bull = <span className={classes.bullet}>•</span>;
 
     return (
         <Card className={classes.root} >

@@ -1,8 +1,8 @@
 import OmokRoom from "./OmokRoom";
-import React,{useState} from "react";
+import React, {useState} from "react";
 import {useEffect} from "react";
 import {Room, User} from "../js/models";
-import {socket} from "../../App"
+import OmokChat from "./OmokChat";
 
 const getWrapperSize = () => {
     return (window.innerHeight - 64) + 'px'
@@ -17,6 +17,8 @@ const roomList = [
 ];
 
 export default function OmokMain() {
+    const id = Math.floor(Math.random()*100);
+    const user = User(id, `Guest ${id}`);
 
     const refreshHeight = () => {
         setHeight(getWrapperSize());
@@ -30,26 +32,6 @@ export default function OmokMain() {
             window.removeEventListener('resize', refreshHeight);
         }
     }, []);
-
-    /* socket */
-
-
-    let [inputText, setInputText] = useState('');
-    let [textdiv, setTextDiv] = useState('');
-    useEffect(() => {
-        socket.on('res', (msg) => {
-            console.log('res : ' + msg);
-            setTextDiv(prevState => [...prevState,'   |    '+msg]);
-        });
-    }, []);
-
-    function clickfunc(){
-        socket.emit('chat', { name: inputText });
-    }
-
-    const onChange = (e) => {
-        setInputText(e.target.value);
-    }
 
     return (
         <>
@@ -66,12 +48,7 @@ export default function OmokMain() {
                         )
                     }
                 </div>
-                <div style={{backgroundColor: "skyblue", maxHeight: '600px', marginTop: '30px'}}>
-                    <h2>채팅영역</h2>
-                    <textarea className='chatTextArea' value={inputText} onChange={onChange}/>
-                    <button onClick={clickfunc}>enter</button>
-                    <div className='chatting'>{textdiv}</div>
-                </div>
+                <OmokChat user={user}/>
             </div>
         </>
     );

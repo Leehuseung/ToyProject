@@ -1,10 +1,5 @@
-const WebSocket = require('ws');
-const cors = require('cors');
-const SocketIO = require('socket.io');
-
 module.exports = () => {
-    let app = require('express')();
-    let server = require('http').createServer(app);
+    let server = require('http').createServer();
     let io = require('socket.io')(server, {
         cors: {
             origin: '*',
@@ -12,16 +7,24 @@ module.exports = () => {
     });
 
     io.on('connection', function(socket) {
-
         socket.on('init', function(data) {
             console.log(data.name);
-            // io.emit('res',data.name);
+            io.emit('announce', data.name);
             // socket.emit('welcome', `hello! ${data.name}`);
         });
 
         socket.on('chat',function(data){
-            console.log(`서버가 수신한 메세지 : ${data.name}`);
-            io.emit('res',data.name);
+            console.log(`서버가 수신한 메세지 : ${data.message}`);
+            io.emit('res', {name:data.name, message: data.message});
+        });
+
+        socket.on('leave',function(data){
+            console.log(data.name);
+            io.emit('announce', data.name);
+        });
+
+        socket.on('disconnect', function() {
+            console.log('user disconnected: ' + socket.name);
         });
 
         // 접속한 클라이언트의 정보가 수신되면
@@ -67,9 +70,6 @@ module.exports = () => {
         //     socket.disconnect();
         // })
 
-        // socket.on('disconnect', function() {
-        //     console.log('user disconnected: ' + socket.name);
-        // });
     });
 
     server.listen(5000, function() {

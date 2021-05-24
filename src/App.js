@@ -6,7 +6,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import TodoLayout from "./TodoList/component/TodoLayout.jsx";
 import {HTML5Backend} from 'react-dnd-html5-backend'
 import {DndProvider} from 'react-dnd'
@@ -14,18 +13,14 @@ import loginImage from "./img/kakaoLogin.png";
 import {loginWithKakao} from "./TodoList/js/auth";
 import {useModal} from "./TodoList/js/hooks";
 import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
-import HomeIcon from "@material-ui/icons/Home";
-import {ListAlt, SportsEsports} from "@material-ui/icons";
+import {ListAlt, SportsEsports, Home, Menu, ChevronLeft, ChevronRight} from "@material-ui/icons";
 import Drawer from "@material-ui/core/Drawer";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import OmokMain from "./Omok/component/OmokMain.jsx";
-import socketio from "socket.io-client";
 
 
 const drawerWidth = 240;
@@ -40,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        height : appBarHeight,
+        height: appBarHeight,
     },
     title: {
         flexGrow: 1,
@@ -105,7 +100,7 @@ const routes = [
         path: "/",
         exact: true,
         text: "Home",
-        icon: () => <HomeIcon/>,
+        icon: () => <Home/>,
         render: () => <h2>HOME</h2>
     },
     {
@@ -128,16 +123,6 @@ const routes = [
     }
 ];
 
-export const socket = socketio.connect('http://localhost:5000');
-
-(() => {
-    socket.emit('init', { name: '새로 누군가 들어옴' });
-
-    socket.on('welcome', (msg) => {
-        console.log(msg);
-    });
-
-})();
 
 export default function App() {
     const classes = useStyles();
@@ -161,7 +146,7 @@ export default function App() {
                         edge="start"
                         className={clsx(classes.menuButton, show && classes.hide)}
                     >
-                        <MenuIcon/>
+                        <Menu/>
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
                         Toy Project
@@ -185,14 +170,15 @@ export default function App() {
                 >
                     <div className={classes.drawerHeader}>
                         <IconButton onClick={toggle}>
-                            {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
+                            {theme.direction === 'ltr' ? <ChevronLeft/> : <ChevronRight/>}
                         </IconButton>
                     </div>
                     <Divider/>
                     <List>
                         {routes.map((route, index) => (
-                            <Link to={route.path}>
-                                <ListItem button key={route.text}>
+                            <Link key={route.path}
+                                  to={route.path}>
+                                <ListItem>
                                     <ListItemIcon>{route.icon()}</ListItemIcon>
                                     <ListItemText primary={route.text}/>
                                 </ListItem>
@@ -208,6 +194,7 @@ export default function App() {
                     <Switch>
                         {routes.map((route, index) => (
                             <Route
+                                key={route.path}
                                 exact={route.exact}
                                 path={route.path}
                                 render={route.render}
