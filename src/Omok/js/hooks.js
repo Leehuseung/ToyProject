@@ -42,7 +42,7 @@ export function useChatting(userId, roomId) {
             chatSocket.emit('leave', {room:roomId, name: user.name})
             chatSocket.removeAllListeners();
         }
-    }, [userId, roomId]);
+    }, [userId, roomId, user.name]);
     
     return [log, sendMessage];
 }

@@ -1,10 +1,10 @@
 import {Home, ListAlt, SportsEsports} from "@material-ui/icons";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
-import TodoLayout from "./TodoList/component/TodoLayout";
-import OmokMain from "./Omok/component/OmokMain";
+import TodoLayout from "../TodoList/component/TodoLayout";
+import OmokMain from "../Omok/component/OmokMain";
 import React from "react";
-import OmokRoom from "./Omok/component/OmokRoom";
+import OmokRoom from "../Omok/component/OmokRoom";
 
 export const routes = [
     {
@@ -35,9 +35,6 @@ export const routes = [
     },
     {
         path: "/omok/:id",
-        text: "game room",
-        exact: true,
-        icon: ()=>{},
         render : (props) => (
             <OmokRoom
                 id={props.match.params.id}

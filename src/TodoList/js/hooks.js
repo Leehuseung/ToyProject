@@ -1,6 +1,5 @@
 import {useMutation, useQuery} from "@apollo/client";
 import {ADD_TODO, DELETE_TODO, FETCH_TODOS, UPDATE_TODO} from "./graphql";
-import {useState} from "react";
 
 export function useFetch() {
     const {loading, error, data} = useQuery(FETCH_TODOS);
@@ -58,12 +57,4 @@ export function useDelete() {
         },
     });
     return remove;
-}
-
-
-export function useModal () {
-    const [showModal, updateShowModal] = useState(false);
-    const toggleModal = () => updateShowModal(state=>!state);
-
-    return [showModal, toggleModal];
 }

@@ -1,10 +1,11 @@
 import React from "react";
 import Paper from '@material-ui/core/Paper';
 import {EditTodoDialog} from "./TodoEdit.jsx";
-import {useDelete, useModal, useUpdate} from "../js/hooks";
+import {useDelete, useUpdate} from "../js/hooks";
 import { makeStyles } from "@material-ui/core/styles";
 import ClearIcon from '@material-ui/icons/Clear';
 import { useDrag } from 'react-dnd';
+import {useModal} from "../../common/hooks";
 
 
 export function Todo(props) {

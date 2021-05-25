@@ -7,7 +7,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {Menu, MenuItem} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import {useModal, useUpdate} from "../js/hooks";
+import {useUpdate} from "../js/hooks";
+import {useModal} from "../../common/hooks";
 import {stateType} from "../js/stateType";
 
 

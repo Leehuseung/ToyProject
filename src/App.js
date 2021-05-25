@@ -1,27 +1,19 @@
 import React from 'react';
 import clsx from 'clsx';
-import {makeStyles, useTheme} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import loginImage from "./img/kakaoLogin.png";
-import {loginWithKakao} from "./TodoList/js/auth";
-import {useModal} from "./TodoList/js/hooks";
-import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
-import {Menu, ChevronLeft, ChevronRight} from "@material-ui/icons";
-import Drawer from "@material-ui/core/Drawer";
-import Divider from "@material-ui/core/Divider";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import {routes} from "./routes";
+import {useModal} from "./common/hooks";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
+import {Menu} from "@material-ui/icons";
+import {routes} from "./common/routes";
+import {drawerWidth, appBarHeight} from "./common/components/constants";
+import {AppDrawer} from "./common/components/AppDrawer";
+import KakaoLoginButton from "./common/components/KakaoLoginButton";
 
-
-const drawerWidth = 240;
-const appBarHeight = 60;
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -68,33 +60,10 @@ const useStyles = makeStyles((theme) => ({
         }),
         marginLeft: 0,
     },
-    kakaoButton: {
-        height: 40,
-        '&:hover': {
-            cursor: 'pointer',
-        }
-    },
-
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0,
-    },
-    drawerPaper: {
-        width: drawerWidth,
-    },
-    drawerHeader: {
-        display: 'flex',
-        alignItems: 'center',
-        padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
-        justifyContent: 'flex-end',
-    },
 }));
 
 export default function App() {
     const classes = useStyles();
-    const theme = useTheme();
     const [show, toggle] = useModal();
 
     return (
@@ -119,41 +88,14 @@ export default function App() {
                     <Typography variant="h6" className={classes.title}>
                         Toy Project
                     </Typography>
-                    <img className={classes.kakaoButton}
-                         src={loginImage}
-                         alt="kakao login"
-                         onClick={loginWithKakao}
-                    />
+                    <KakaoLoginButton/>
                 </Toolbar>
             </AppBar>
             <BrowserRouter>
-                <Drawer
-                    className={classes.drawer}
-                    variant="persistent"
-                    anchor="left"
-                    open={show}
-                    classes={{
-                        paper: classes.drawerPaper,
-                    }}
-                >
-                    <div className={classes.drawerHeader}>
-                        <IconButton onClick={toggle}>
-                            {theme.direction === 'ltr' ? <ChevronLeft/> : <ChevronRight/>}
-                        </IconButton>
-                    </div>
-                    <Divider/>
-                    <List>
-                        {routes.map((route, index) => (
-                            <Link key={route.path}
-                                  to={route.path}>
-                                <ListItem>
-                                    <ListItemIcon>{route.icon()}</ListItemIcon>
-                                    <ListItemText primary={route.text}/>
-                                </ListItem>
-                            </Link>
-                        ))}
-                    </List>
-                </Drawer>
+                <AppDrawer
+                    open = {show}
+                    toggle = {toggle}
+                />
                 <main
                     className={clsx(classes.content, {
                         [classes.contentShift]: show,
@@ -174,5 +116,3 @@ export default function App() {
         </div>
     );
 }
-
-
