@@ -14,13 +14,12 @@ import {drawerWidth, appBarHeight} from "./common/components/constants";
 import {AppDrawer} from "./common/components/AppDrawer";
 import KakaoLoginButton from "./common/components/KakaoLoginButton";
 
-
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
     },
     appBar: {
-        transition: theme.transitions.create(['margin', 'width'], {
+        transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
@@ -31,8 +30,7 @@ const useStyles = makeStyles((theme) => ({
     },
     appBarShift: {
         width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
-        transition: theme.transitions.create(['margin', 'width'], {
+        transition: theme.transitions.create( 'width', {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
         }),
@@ -44,8 +42,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'none',
     },
     content: {
-        flexGrow: 1,
-        padding: '0px',
+        flexGrow : 1,
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -59,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
             duration: theme.transitions.duration.enteringScreen,
         }),
         marginLeft: 0,
+        marginTop: appBarHeight,
     },
 }));
 

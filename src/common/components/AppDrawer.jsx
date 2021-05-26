@@ -7,7 +7,7 @@ import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import {ChevronLeft, ChevronRight} from "@material-ui/icons";
-import {Link} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import {routes} from "../routes";
@@ -32,7 +32,13 @@ const drawerStyles = makeStyles((theme) => ({
 
 export function AppDrawer(props) {
     const theme = useTheme();
+    const history = useHistory();
     const classes = drawerStyles(theme);
+
+    const handleClick = (path) => {
+        history.push(path);
+        props.toggle();
+    }
 
     return (
       <div>
@@ -52,18 +58,15 @@ export function AppDrawer(props) {
               </div>
               <Divider/>
               <List>
-                  {routes.filter(route => route.text).map((route, index) => (
-                      <Link key={route.path}
-                            to={route.path}>
-                          <ListItem>
-                              <ListItemIcon>{route.icon()}</ListItemIcon>
-                              <ListItemText primary={route.text}/>
-                          </ListItem>
-                      </Link>
+                  {routes.filter(route => route.text).map((route) => (
+                      <ListItem button='true'
+                                onClick={()=>handleClick(route.path)}>
+                          <ListItemIcon>{route.icon()}</ListItemIcon>
+                          <ListItemText primary={route.text}/>
+                      </ListItem>
                   ))}
               </List>
           </Drawer>
       </div>
     );
-
 }

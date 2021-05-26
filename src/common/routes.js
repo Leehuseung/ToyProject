@@ -12,7 +12,7 @@ export const routes = [
         exact: true,
         text: "Home",
         icon: () => <Home/>,
-        render: () => <h2>HOME</h2>
+        render: () => <h2>Toy Project</h2>
     },
     {
         path: "/todolist",

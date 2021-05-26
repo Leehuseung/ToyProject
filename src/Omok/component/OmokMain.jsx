@@ -4,24 +4,31 @@ import RoomListview from "./RoomListview";
 import {makeStyles} from "@material-ui/core";
 import React, {useMemo, useState} from "react";
 import {OmokHeader} from "./OmokHeader";
+import {appBarHeight} from "../../common/components/constants";
 
 const useStyles = makeStyles({
     root: {
         display: 'grid',
         gridTemplateColumns: '2fr 1fr',
-        margin: '30px'
+        gridGap: "30px",
+        margin: '30px',
+        overflow: 'auto',
     },
     rooms: {
         display: "flex",
         flexDirection: "column",
-        width: "95%",
-        minWidth : 300,
+        width: "100%",
+        minWidth: 300,
+        minHeight: '100px',
+        overflow: "auto",
+        maxHeight : `calc(100vh - ${appBarHeight}px)`
     },
     listView: {
         flex: 1,
-    }
+        overflow : 'scroll',
+        maxHeight : `calc(100vh - ${appBarHeight}px - 100px)`
+    },
 });
-
 
 export default function OmokMain() {
     const rooms = useMemo(() => {
@@ -77,3 +84,4 @@ export default function OmokMain() {
         </>
     );
 }
+

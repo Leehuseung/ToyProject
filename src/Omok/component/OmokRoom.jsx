@@ -1,18 +1,24 @@
 import { makeStyles } from '@material-ui/core/styles';
 import OmokChat from "./OmokChat";
 import {useGameRoom} from "../js/hooks";
+import {appBarHeight} from "../../common/components/constants";
 
 const useStyles = makeStyles({
-    room: {
-        minWidth: 275,
-        width: '95%',
-        marginBottom: 20,
+    root: {
+        display: 'grid',
+        gridTemplateColumns: '2fr 1fr',
+        gridGap: "30px",
+        margin: '30px',
+        overflow: 'auto',
     },
-    title: {
-        fontSize: 14,
-    },
-    pos: {
-        marginBottom: 12,
+    rooms: {
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        minWidth: '300px',
+        minHeight: '300px',
+        overflow: "auto",
+        maxHeight : `calc(100vh - ${appBarHeight}px)`
     },
 });
 
@@ -25,10 +31,8 @@ export default function OmokRoom(props) {
     }
 
     return (
-        <>
-            <div style={{display: 'grid', gridTemplateColumns: '2fr 1fr', margin: '30px'}}
-            >
-                <div className={classes.room}>
+            <div className={classes.root}>
+                <div className={classes.rooms}>
                    <h2>오목판</h2>
                 </div>
                 <OmokChat
@@ -36,6 +40,5 @@ export default function OmokRoom(props) {
                     room={props.id}
                 />
             </div>
-        </>
     );
 }

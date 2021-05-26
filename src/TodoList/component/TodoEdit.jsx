@@ -16,7 +16,7 @@ export function NewTodoButton() {
     const [show, toggle] = useModal();
 
     return (
-        <div id="todoInput">
+        <div style = {{marginBottom: '10px'}}>
             <Button variant="contained" color="secondary" onClick={toggle}>NewTODO</Button>
             <EditTodoDialog open={show} toggle ={toggle} todo={{id: null}}/>
         </div>

@@ -3,12 +3,12 @@ import React from "react";
 import {useDrop} from "react-dnd";
 import {stateType} from "../js/stateType";
 
-export default function TodoList(props) {
 
+export default function TodoList(props) {
     const [{isOver}, drop] = useDrop(() => ({
         // The type (or types) to accept - strings or symbols
         accept: props.accepts,
-        drop: () => ({ name: stateType.fromType(props.type) }),
+        drop: () => ({name: stateType.fromType(props.type)}),
         // Props to collect
         collect: (monitor) => ({
             isOver: monitor.isOver(),
@@ -17,10 +17,13 @@ export default function TodoList(props) {
     }));
 
     return (
-        <div className="todo-list"
-             id={props.type}
+        <div id={props.type}
              ref={drop}
-             style={{ backgroundColor: isOver ? '#87CEFA' : '' , minHeight:'500px'}}
+             style={{
+                 borderRadius: 10,
+                 backgroundColor: isOver ? 'lightgrey' : '',
+                 minHeight: '500px'
+             }}
         >
             {
                 props.todos.map(todo => (

@@ -57,7 +57,7 @@ export function Todo(props) {
             ref={drag}
         >
             <Paper className={customPaperStyles().todo} onClick={toggle}>
-                {todo.text}, {todo.id}
+                {todo.text}
                 <ClearIcon className={customPaperStyles().removeBtn} onClick={(e)=>{
                     e.stopPropagation();
                     removeTodo(todo.id);
