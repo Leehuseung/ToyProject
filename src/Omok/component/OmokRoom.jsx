@@ -1,7 +1,10 @@
-import { makeStyles } from '@material-ui/core/styles';
+import {fade, makeStyles} from '@material-ui/core/styles';
 import OmokChat from "./OmokChat";
 import {useGameRoom} from "../js/hooks";
 import {appBarHeight} from "../../common/components/constants";
+import OmokBoardRow from './OmokBoardRow.jsx';
+import React,{useState} from "react";
+import GameProvider from '../js/game';
 
 const useStyles = makeStyles({
     root: {
@@ -15,25 +18,57 @@ const useStyles = makeStyles({
         display: "flex",
         flexDirection: "column",
         width: "100%",
-        minWidth: '300px',
-        minHeight: '300px',
+        minWidth: '500px',
+        minHeight: '820px',
         overflow: "auto",
         maxHeight : `calc(100vh - ${appBarHeight}px)`
     },
+    omokBoard: {
+        backgroundColor : '#FFC078',
+        width:'495px',
+        height:'437px',
+        border:'1px solid black',
+        margin: '0 auto'
+    },
+    omokTop: {
+        height: '100px'
+    },
+    boardRow: {
+        height: '29px'
+    }
 });
 
 export default function OmokRoom(props) {
     const classes = useStyles();
 
     const room = useGameRoom(props.id);
+
     if(room===null) {
         return <>Loading...</>
     }
 
+    let y = 14;
+    let boardRowArr = [];
+
+    for (let i = y; i >= 0; i--) {
+        boardRowArr.push(i);
+    }
+
+
+
     return (
             <div className={classes.root}>
                 <div className={classes.rooms}>
-                   <h2>오목판</h2>
+                    <div className={classes.omokTop}></div>
+                    <GameProvider>
+                            <div className={classes.omokBoard}>
+                            {
+                                boardRowArr.map(
+                                    y => <OmokBoardRow y={y}/>
+                                )
+                            }
+                        </div>
+                    </GameProvider>
                 </div>
                 <OmokChat
                     title={room.title}
