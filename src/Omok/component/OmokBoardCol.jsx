@@ -104,9 +104,28 @@ export default function OmokBoardCol(props){
             }
         }
         setBoardArr(changeBoardArr);
-
-        hideStoneBackground();
     }
+
+    useEffect(() => {
+        if(props.y === 16){
+            hideBottomBorder();
+        }
+        if(props.x === 0){
+            hideLeftBorder()
+        }
+        if(props.x === 16){
+            hideRightBorder();
+        }
+        if(props.y === 0){
+            hideTopBorder();
+        }
+        if(props.x === 0 && props.y === 0){
+            setTopColStyle({'borderRight':'0px','borderBottom':'0px'});
+        }
+        if(props.x === 16 && props.y === 16){
+            setBotColStyle({'borderTop':'0px','borderLeft':'0px'});
+        }
+    },[]);
 
     let isWinner = (y,x) => {
 
@@ -237,6 +256,27 @@ export default function OmokBoardCol(props){
             color = 'black';
             boxShadow = '2px 2px 2px grey';
             hideStoneBackground(boardArr[props.y][props.x].status);
+        } else {
+            setTopColStyle({'opacity': 1});
+            setBotColStyle({'opacity': 1});
+            if(props.y === 16){
+                hideBottomBorder();
+            }
+            if(props.x === 0){
+                hideLeftBorder()
+            }
+            if(props.x === 16){
+                hideRightBorder();
+            }
+            if(props.y === 0){
+                hideTopBorder();
+            }
+            if(props.x === 0 && props.y === 0){
+                setTopColStyle({'borderRight':'0px','borderBottom':'0px'});
+            }
+            if(props.x === 16 && props.y === 16){
+                setBotColStyle({'borderTop':'0px','borderLeft':'0px'});
+            }
         }
 
         setStone({
