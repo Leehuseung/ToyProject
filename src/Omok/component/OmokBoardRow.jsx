@@ -11,18 +11,11 @@ const useStyles = makeStyles({
 export default function OmokBoardRow (props){
     const classes = useStyles();
 
-    let x = 17;
-    let boardColArr = [];
-
-    for (let i = 0; i < x; i++) {
-        boardColArr.push(i);
-    }
-
     return(
         <div className={classes.boardRow}>
             {
-                boardColArr.map(
-                    x => <OmokBoardCol y={props.y} x={x} status={null} turn={props.turn}/>
+                props.row.map(
+                    row => <OmokBoardCol x={row.axisX} y={row.axisY}  status={row.status} />
                 )
             }
         </div>

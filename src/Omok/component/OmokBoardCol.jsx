@@ -34,6 +34,7 @@ const useStyles = makeStyles({
 export default function OmokBoardCol(props){
     const classes = useStyles();
     const { turning } = React.useContext(GameContext);
+    const { boardArr } = React.useContext(GameContext);
 
     let [status,setStatus] = useState(props.status);
     let [stoneStyle,setStone] = useState({});
@@ -55,7 +56,7 @@ export default function OmokBoardCol(props){
     let hideRightBorder = () => { setBotColStyle({'borderTop':'0px'}) }
 
     useEffect(() => {
-        if(props.y === 14){
+        if(props.y === 16){
             hideTopBorder();
         }
         if(props.x === 0){
@@ -67,7 +68,7 @@ export default function OmokBoardCol(props){
         if(props.y === 0){
             hideBottomBorder();
         }
-        if(props.x === 0 && props.y === 14){
+        if(props.x === 0 && props.y === 16){
             setTopColStyle({'borderRight':'0px','borderBottom':'0px'});
         }
         if(props.x === 16 && props.y === 0){

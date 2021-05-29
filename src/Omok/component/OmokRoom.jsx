@@ -4,7 +4,7 @@ import {useGameRoom} from "../js/hooks";
 import {appBarHeight} from "../../common/components/constants";
 import OmokBoardRow from './OmokBoardRow.jsx';
 import React,{useState} from "react";
-import GameProvider from '../js/game';
+import {GameContext} from '../js/game';
 
 const useStyles = makeStyles({
     root: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles({
     omokBoard: {
         backgroundColor : '#FFC078',
         width:'495px',
-        height:'437px',
+        height:'495px',
         border:'1px solid black',
         margin: '0 auto'
     },
@@ -40,35 +40,25 @@ const useStyles = makeStyles({
 
 export default function OmokRoom(props) {
     const classes = useStyles();
-
     const room = useGameRoom(props.id);
+
+    const { boardArr } = React.useContext(GameContext);
 
     if(room===null) {
         return <>Loading...</>
     }
 
-    let y = 14;
-    let boardRowArr = [];
-
-    for (let i = y; i >= 0; i--) {
-        boardRowArr.push(i);
-    }
-
-
-
     return (
             <div className={classes.root}>
                 <div className={classes.rooms}>
                     <div className={classes.omokTop}></div>
-                    <GameProvider>
-                            <div className={classes.omokBoard}>
-                            {
-                                boardRowArr.map(
-                                    y => <OmokBoardRow y={y}/>
-                                )
-                            }
-                        </div>
-                    </GameProvider>
+                        <div className={classes.omokBoard}>
+                        {
+                            boardArr.map(
+                                row => <OmokBoardRow row={row}/>
+                            )
+                        }
+                    </div>
                 </div>
                 <OmokChat
                     title={room.title}

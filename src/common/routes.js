@@ -5,6 +5,7 @@ import TodoLayout from "../TodoList/component/TodoLayout";
 import OmokMain from "../Omok/component/OmokMain";
 import React from "react";
 import OmokRoom from "../Omok/component/OmokRoom";
+import GameProvider from '../Omok/js/game';
 
 export const routes = [
     {
@@ -36,9 +37,11 @@ export const routes = [
     {
         path: "/omok/:id",
         render : (props) => (
-            <OmokRoom
-                id={props.match.params.id}
-            />
+            <GameProvider>
+                <OmokRoom
+                    id={props.match.params.id}
+                />
+            </GameProvider>
         )
     }
 ];
