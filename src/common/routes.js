@@ -4,8 +4,28 @@ import {HTML5Backend} from "react-dnd-html5-backend";
 import TodoLayout from "../TodoList/component/TodoLayout";
 import OmokMain from "../Omok/component/OmokMain";
 import React from "react";
-import OmokRoom from "../Omok/component/OmokRoom";
-import GameProvider from '../Omok/js/game';
+import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
+import {RestLink} from "apollo-link-rest";
+
+
+const client = new ApolloClient({
+        uri: `${window.location.protocol}//${window.location.hostname}:5050/gql`,
+        cache: new InMemoryCache(),
+    }
+);
+
+const restClient = new ApolloClient(
+    {
+        link: new RestLink({
+            uri: `${window.location.protocol}//49.247.146.76:8000/api`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        }),
+        cache: new InMemoryCache()
+    }
+);
+
 
 export const routes = [
     {
@@ -20,28 +40,21 @@ export const routes = [
         text: "Todo List",
         icon: () => <ListAlt/>,
         render: () => (
-            <DndProvider backend={HTML5Backend}>
-                <TodoLayout/>
-            </DndProvider>
+            <ApolloProvider client={client}>
+                <DndProvider backend={HTML5Backend}>
+                    <TodoLayout/>
+                </DndProvider>
+            </ApolloProvider>
         )
     },
     {
         path: "/omok",
         text: "오목",
-        exact: true,
         icon: () => <SportsEsports/>,
         render: () => (
-            <OmokMain/>
+            <ApolloProvider client={restClient}>
+                <OmokMain/>
+            </ApolloProvider>
         )
     },
-    {
-        path: "/omok/:id",
-        render : (props) => (
-            <GameProvider>
-                <OmokRoom
-                    id={props.match.params.id}
-                />
-            </GameProvider>
-        )
-    }
 ];

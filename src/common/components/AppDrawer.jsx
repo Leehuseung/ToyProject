@@ -58,8 +58,9 @@ export function AppDrawer(props) {
               </div>
               <Divider/>
               <List>
-                  {routes.filter(route => route.text).map((route) => (
-                      <ListItem button='true'
+                  {routes.map((route) => (
+                      <ListItem key = {route.text}
+                                button={true}
                                 onClick={()=>handleClick(route.path)}>
                           <ListItemIcon>{route.icon()}</ListItemIcon>
                           <ListItemText primary={route.text}/>

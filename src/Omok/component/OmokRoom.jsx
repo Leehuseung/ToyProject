@@ -1,10 +1,11 @@
-import {fade, makeStyles} from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import OmokChat from "./OmokChat";
 import {useGameRoom} from "../js/hooks";
 import {appBarHeight} from "../../common/components/constants";
 import OmokBoardRow from './OmokBoardRow.jsx';
-import React,{useState} from "react";
+import React from "react";
 import {GameContext} from '../js/game';
+import {useParams} from 'react-router-dom';
 
 const useStyles = makeStyles({
     root: {
@@ -21,13 +22,13 @@ const useStyles = makeStyles({
         minWidth: '500px',
         minHeight: '820px',
         overflow: "auto",
-        maxHeight : `calc(100vh - ${appBarHeight}px)`
+        maxHeight: `calc(100vh - ${appBarHeight}px)`
     },
     omokBoard: {
-        backgroundColor : '#FFC078',
-        width:'495px',
-        height:'495px',
-        border:'1px solid black',
+        backgroundColor: '#FFC078',
+        width: '495px',
+        height: '495px',
+        border: '1px solid black',
         margin: '0 auto'
     },
     omokTop: {
@@ -38,21 +39,21 @@ const useStyles = makeStyles({
     }
 });
 
-export default function OmokRoom(props) {
+export default function OmokRoom() {
     const classes = useStyles();
-    const room = useGameRoom(props.id);
+    const {id} = useParams();
+    const {loading, error, room} = useGameRoom(id);
+    const {boardArr} = React.useContext(GameContext);
 
-    const { boardArr } = React.useContext(GameContext);
+    if (loading) return <>Loading...</>
+    if (error) return <>Error...{error.toString()}</>
 
-    if(room===null) {
-        return <>Loading...</>
-    }
-
-    return (
+    if (room) {
+        return (
             <div className={classes.root}>
                 <div className={classes.rooms}>
                     <div className={classes.omokTop}></div>
-                        <div className={classes.omokBoard}>
+                    <div className={classes.omokBoard}>
                         {
                             boardArr.map(
                                 row => <OmokBoardRow row={row}/>
@@ -62,8 +63,11 @@ export default function OmokRoom(props) {
                 </div>
                 <OmokChat
                     title={room.title}
-                    room={props.id}
+                    room={id}
                 />
             </div>
-    );
+        );
+    } else {
+        return <>This room is currently not available!</>;
+    }
 }

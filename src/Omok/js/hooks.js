@@ -1,15 +1,18 @@
 import {useEffect, useState} from "react";
-import {Room, User} from "./models";
+import {User} from "./models";
 import {chatSocket} from "./socket";
+import {useMutation, useQuery} from "@apollo/client";
+import {CREATE_ROOM, FETCH_ROOMS, FETCH_ROOM, UPDATE_ROOM} from "./graphql";
 
 export function useGameRoom(id) {
-    const [room, setRoom] = useState(null);
-    useEffect(()=>{
-        ///fetch room
-        setRoom(Room(id, '초보만'));
-    },[id]);
+    const {loading, error, data} = useQuery(FETCH_ROOM, {variables: {id:id}});
 
-    return room;
+    if(data){
+        const room = data["currentRoom"];
+        return {loading, error, room};
+    }
+
+    return {loading, error, data};
 }
 
 export function useChatting(userId, roomId) {
@@ -39,10 +42,51 @@ export function useChatting(userId, roomId) {
         });
 
         return () => {
-            chatSocket.emit('leave', {room:roomId, name: user.name})
+            chatSocket.emit('leave', {room: roomId, name: user.name})
             chatSocket.removeAllListeners();
         }
     }, [userId, roomId, user.name]);
-    
+
     return [log, sendMessage];
+}
+
+export function useFetch() {
+    const {loading, error, data} = useQuery(FETCH_ROOMS);
+    return {loading, error, data};
+}
+
+export function useUpdate() {
+    const updateRoom = async (room) => {
+        if(room.id) {
+            await update({variables: {input: JSON.stringify(room)}});
+        } else {
+            await add({variables: {input: JSON.stringify(room)}});
+        }
+    }
+
+    const [add] = useMutation(CREATE_ROOM, {
+        update: (cache, {data: {room}}) => {
+            cache.modify({
+                fields: {
+                    rooms(existing) {
+                        return [...existing, room];
+                    }
+                },
+            });
+        },
+    });
+
+    const [update] = useMutation(UPDATE_ROOM, {
+        update: (cache, {data: {updated}}) => {
+            cache.modify({
+                fields: {
+                    rooms(existing, {readField}) {
+                        return existing.map((r) => readField('id', r) === updated.id ? updated : r);
+                    }
+                },
+            });
+        },
+    });
+
+    return updateRoom;
 }

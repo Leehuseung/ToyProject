@@ -1,10 +1,13 @@
-import {Room, User} from "../js/models";
 import OmokChat from "./OmokChat";
 import RoomListview from "./RoomListview";
 import {makeStyles} from "@material-ui/core";
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {OmokHeader} from "./OmokHeader";
 import {appBarHeight} from "../../common/components/constants";
+import {useFetch} from "../js/hooks";
+import {Route, Switch} from "react-router-dom";
+import GameProvider from "../js/game";
+import OmokRoom from "./OmokRoom";
 
 const useStyles = makeStyles({
     root: {
@@ -21,67 +24,70 @@ const useStyles = makeStyles({
         minWidth: 300,
         minHeight: '100px',
         overflow: "auto",
-        maxHeight : `calc(100vh - ${appBarHeight}px)`
+        maxHeight: `calc(100vh - ${appBarHeight}px)`
     },
     listView: {
         flex: 1,
-        overflow : 'scroll',
-        maxHeight : `calc(100vh - ${appBarHeight}px - 100px)`
+        overflow: 'scroll',
+        maxHeight: `calc(100vh - ${appBarHeight}px - 100px)`
     },
 });
 
 export default function OmokMain() {
-    const rooms = useMemo(() => {
-        let rooms = []
-        for (let i = 0; i < 20; i++) {
-            rooms.push(
-                Room(
-                    i,
-                    i % 2 ? 'gogo gogo yo' : 'omok gg yo',
-                    User(i, `guest${i}`),
-                    i % 2,
-                    i % 2
-                )
-            )
-        }
-        return rooms;
-    }, []);
-
     const classes = useStyles();
-    const [roomList, setRooms] = useState(rooms);
+    const [roomList, setRooms] = useState([]);
+    const {loading, error, data} = useFetch();
+
+    useEffect(() => {
+        if (data) {
+            setRooms(data.rooms.results ?? []);
+        }
+    }, [data]);
 
     const onStateChanged = (status) => {
         if (status === undefined) {
-            setRooms(rooms);
+            setRooms(roomList);
         } else if (status) {
-            setRooms([...rooms.filter(room => room.isAvailable)]);
+            setRooms([...roomList.filter(room => room.isAvailable)]);
         } else {
-            setRooms([...rooms.filter(room => !room.isAvailable)]);
+            setRooms([...roomList.filter(room => !room.isAvailable)]);
         }
     }
 
     const onSearch = (text) => {
-        setRooms([...rooms.filter(room=>room.title.includes(text))]);
+        setRooms([...roomList.filter(room => room.title.includes(text))]);
     }
 
+    if (loading) return "Loading";
+    if (error) return "Error";
+
     return (
-        <>
-            <div className={classes.root}>
-                <div className={classes.rooms}>
-                    <OmokHeader
-                        onStateChanged = {onStateChanged}
-                        onSearch = {onSearch}
-                    />
-                    <div className={classes.listView}>
-                        <RoomListview rooms={roomList}/>
+        <GameProvider>
+           {/* Nested Routing Applied To Wrap
+               ApolloClient and GameProvider to Whole Omok App*/}
+            <Switch>
+                <Route exact path={'/omok'}>
+                    <div className={classes.root}>
+                        <div className={classes.rooms}>
+                            <OmokHeader
+                                onStateChanged={onStateChanged}
+                                onSearch={onSearch}
+                            />
+                            <div className={classes.listView}>
+                                <RoomListview rooms={roomList}/>
+                            </div>
+                        </div>
+                        <OmokChat
+                            title="대기실"
+                            room='lobby'
+                        />
                     </div>
-                </div>
-                <OmokChat
-                    title="대기실"
-                    room='lobby'
-                />
-            </div>
-        </>
+                </Route>
+                <Route path={`/omok/:id`}>
+                    <OmokRoom/>
+                </Route>
+            </Switch>
+        </GameProvider>
     );
 }
 

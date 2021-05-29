@@ -12,6 +12,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {fade} from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
+import {useUpdate} from "../js/hooks";
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -124,16 +125,17 @@ export function OmokHeader(props) {
 }
 
 function MakeRoomDialog(props) {
+    const addRoom = useUpdate();
     const user = User(1, 'me');
-    const [room, setRoom] = useState(Room(null, '', user, true, false));
+    const [room, setRoom] = useState(Room(null, '', user.id, true, null));
     const handleTitleChange = (evt) => {
         setRoom(
             Room(
                 null,
                 evt.target.value,
-                user,
+                room.user,
                 true,
-                room.hasPassword,
+                room.password,
             )
         )
     };
@@ -143,9 +145,9 @@ function MakeRoomDialog(props) {
             Room(
                 null,
                 room.title,
-                user,
+                room.user,
                 true,
-                !!(evt.target.value),
+                evt.target.value,
             )
         )
     };
@@ -198,9 +200,15 @@ function MakeRoomDialog(props) {
                     </Button>
                     <Button
                         onClick={() => {
-                            console.log(room);
-                            ///TODO post room query
-                            props.toggle();
+                            addRoom({
+                                title : room.title,
+                                room_password : room.password,
+                                user : user.id,
+                                isAvailable : 1,
+                                hasPassword : !!(room.password),
+                            }).then(res =>
+                                props.toggle()
+                            );
                         }}
                         color="primary"
                     >

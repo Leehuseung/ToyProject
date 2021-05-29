@@ -1,10 +1,10 @@
-export const Room = function (id, title, user, isAvailable, hasPassword) {
+export const Room = function (id, title, user_id, isAvailable, password) {
     return {
         id : id,
         title : title,
-        user : user,
+        user : user_id,
+        password : password,
         isAvailable : isAvailable,
-        hasPassword : hasPassword,
     };
 }
 
