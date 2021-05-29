@@ -6,11 +6,11 @@ export const GameContext = React.createContext(null)
 //ReactContext를 사용해서 사용자의 턴 flag 게임내 전역으로 관리
 export default ({ children }) => {
 
-    let [turn,setTurn] = useState(1);
+    let [turn,setTurn] = useState('B');
 
     let BOARD_SIZE = 17;
-    let boardArr = [];
-    for (let i = BOARD_SIZE-1; i >= 0; i--) {
+    let arr = [];
+    for (let i = 0; i < BOARD_SIZE; i++) {
         let colArr = [];
         for (let j = 0; j < BOARD_SIZE; j++) {
             colArr.push({
@@ -19,16 +19,16 @@ export default ({ children }) => {
                 'status':null
             });
         }
-        boardArr.push(colArr);
+        arr.push(colArr);
     }
 
+    let [boardArr,setBoardArr] = useState(arr);
 
     const store = {
         turning: [turn, setTurn],
-        boardArr: boardArr
+        boardArr: boardArr,
+        setBoardArr : setBoardArr
     }
-
-
 
     return <GameContext.Provider value={store}>{children}</GameContext.Provider>
 }

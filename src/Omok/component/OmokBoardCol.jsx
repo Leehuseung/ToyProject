@@ -33,8 +33,7 @@ const useStyles = makeStyles({
 
 export default function OmokBoardCol(props){
     const classes = useStyles();
-    const { turning } = React.useContext(GameContext);
-    const { boardArr } = React.useContext(GameContext);
+    const { turning,boardArr,setBoardArr } = React.useContext(GameContext);
 
     let [status,setStatus] = useState(props.status);
     let [stoneStyle,setStone] = useState({});
@@ -44,9 +43,20 @@ export default function OmokBoardCol(props){
 
     let [turn,setTurn] = turning;
 
-    let hideStoneBackground = () => {
-        setTopColStyle({'opacity': 0});
-        setBotColStyle({'opacity': 0});
+    let hideStoneBackground = (status) => {
+        if(status == null){
+            setTopColStyle({'opacity': 1});
+            setBotColStyle({'opacity': 1});
+        } else {
+            setTopColStyle({'opacity': 0});
+            setBotColStyle({'opacity': 0});
+        }
+
+    }
+
+    let ShowStoneBackground = () => {
+        setTopColStyle({'opacity': 1});
+        setBotColStyle({'opacity': 1});
     }
 
     let hideTopBorder = () => { setTopColStyle({'borderRight':'0px'}) }
@@ -55,9 +65,10 @@ export default function OmokBoardCol(props){
     let hideBottomBorder = () => { setBotColStyle({'borderLeft':'0px'}) }
     let hideRightBorder = () => { setBotColStyle({'borderTop':'0px'}) }
 
+    //omok board ui init
     useEffect(() => {
         if(props.y === 16){
-            hideTopBorder();
+            hideBottomBorder();
         }
         if(props.x === 0){
             hideLeftBorder()
@@ -66,36 +77,166 @@ export default function OmokBoardCol(props){
             hideRightBorder();
         }
         if(props.y === 0){
-            hideBottomBorder();
+            hideTopBorder();
         }
-        if(props.x === 0 && props.y === 16){
+        if(props.x === 0 && props.y === 0){
             setTopColStyle({'borderRight':'0px','borderBottom':'0px'});
         }
-        if(props.x === 16 && props.y === 0){
+        if(props.x === 16 && props.y === 16){
             setBotColStyle({'borderTop':'0px','borderLeft':'0px'});
         }
     },[]);
 
+    let isUndefined = (arr,y,x) => {
+        if(typeof arr[y] != 'undefined' && typeof arr[y][x] != 'undefined'){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    let boardInit = () => {
+        let changeBoardArr = [...boardArr];
+
+        for (let i = 0; i < changeBoardArr.length; i++) {
+            for (let j = 0; j < changeBoardArr[i].length; j++) {
+                changeBoardArr[i][j].status = null;
+            }
+        }
+        setBoardArr(changeBoardArr);
+
+        hideStoneBackground();
+    }
+
+    let isWinner = (y,x) => {
+
+        let count = 1;
+
+        let right = x;
+        for (let i = 1; i < 5; i++) {
+            if(isUndefined(boardArr,y,right+1) && boardArr[y][++right].status == turn){
+                count++;
+            } else {
+                break;
+            }
+        }
+
+        let left = x;
+        for (let i = 1; i < 5; i++) {
+            if(isUndefined(boardArr,y,left-1) && boardArr[y][--left].status == turn){
+                count++;
+            } else {
+                break;
+            }
+        }
+
+        let top = y;
+        let bottom = y;
+        if(count < 5){
+            count = 1;
+
+            for (let i = 1; i < 5; i++) {
+                if(isUndefined(boardArr,top+1,x) && boardArr[++top][x].status == turn){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+
+            for (let i = 1; i < 5; i++) {
+                if(isUndefined(boardArr,bottom-1,x) && boardArr[--bottom][x].status == turn){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if(count < 5){
+            count = 1;
+
+            left = x;
+            top = y;
+            for (let i = 1; i < 5; i++) {
+                if(isUndefined(boardArr,top+1,left+1) && boardArr[++top][++left].status == turn){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+
+            right = x;
+            bottom = y;
+            for (let i = 1; i < 5; i++) {
+                if(isUndefined(boardArr,bottom-1,right-1) && boardArr[--bottom][--right].status == turn){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        }
+
+
+        if(count < 5){
+            count = 1;
+
+            left = x;
+            top = y;
+            for (let i = 1; i < 5; i++) {
+                if(isUndefined(boardArr,top+1,left-1) && boardArr[++top][--left].status == turn){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+
+            right = x;
+            bottom = y;
+            for (let i = 1; i < 5; i++) {
+                if(isUndefined(boardArr,bottom-1,right+1) && boardArr[--bottom][++right].status == turn){
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        if(count >= 5){
+            let winner = turn == 'B' ? '흑돌' : '백돌';
+
+            boardInit();
+            setTurn('B');
+            alert(`${winner}이 승리했습니다.`);
+        }
+
+    }
+
     let putStone = () => {
-        if(status !== null){
+        if(props.status !== null){
             alert('돌 위에 돌을 둘 수 없습니다.');
             return;
         }
-        setStatus(!!turn ? 0 : 1);
-        setTurn(!!turn ? 0 : 1);
+
+        let changeBoardArr = [...boardArr];
+
+        changeBoardArr[props.y][props.x].status = turn == 'B' ? 'B' : 'W';
+        setBoardArr(changeBoardArr);
+        isWinner(props.y,props.x);
+
+        setTurn(turn == 'B' ? 'W' : 'B');
     }
 
     useEffect(() => {
         let color = '';
         let boxShadow = '';
-        if(status){
+        if(boardArr[props.y][props.x].status === 'W'){
             color = 'white';
             boxShadow = '2px 2px 2px grey';
-            hideStoneBackground();
-        }else if (status === 0){
+            hideStoneBackground(boardArr[props.y][props.x].status);
+        }else if (boardArr[props.y][props.x].status === 'B'){
             color = 'black';
             boxShadow = '2px 2px 2px grey';
-            hideStoneBackground();
+            hideStoneBackground(boardArr[props.y][props.x].status);
         }
 
         setStone({
@@ -103,7 +244,8 @@ export default function OmokBoardCol(props){
             'border-radius': '50%',
             'boxShadow' : boxShadow
         });
-    }, [status]);
+
+    }, [boardArr]);
 
     return(
         <div className={classes.boardCol}
