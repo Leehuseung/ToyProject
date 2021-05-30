@@ -1,12 +1,12 @@
 import {makeStyles} from "@material-ui/core/styles";
 import React,{useState,useEffect} from "react";
-import {OmokRoom} from './OmokRoom';
 import {GameContext} from '../js/game';
+import sweetAlert from 'sweetalert';
 
 const useStyles = makeStyles({
     boardCol: {
         width: '29px',
-        height: '30px',
+        height: '29px',
         display: 'inline-block',
         '&:hover': {
             backgroundColor: '#FD7E14'
@@ -35,7 +35,6 @@ export default function OmokBoardCol(props){
     const classes = useStyles();
     const { turning,boardArr,setBoardArr } = React.useContext(GameContext);
 
-    let [status,setStatus] = useState(props.status);
     let [stoneStyle,setStone] = useState({});
 
     let [topColStyle,setTopColStyle] = useState({});
@@ -54,45 +53,14 @@ export default function OmokBoardCol(props){
 
     }
 
-    let ShowStoneBackground = () => {
-        setTopColStyle({'opacity': 1});
-        setBotColStyle({'opacity': 1});
-    }
-
     let hideTopBorder = () => { setTopColStyle({'borderRight':'0px'}) }
     let hideLeftBorder = () => { setTopColStyle({'borderBottom':'0px'}) }
 
     let hideBottomBorder = () => { setBotColStyle({'borderLeft':'0px'}) }
     let hideRightBorder = () => { setBotColStyle({'borderTop':'0px'}) }
 
-    //omok board ui init
-    useEffect(() => {
-        if(props.y === 16){
-            hideBottomBorder();
-        }
-        if(props.x === 0){
-            hideLeftBorder()
-        }
-        if(props.x === 16){
-            hideRightBorder();
-        }
-        if(props.y === 0){
-            hideTopBorder();
-        }
-        if(props.x === 0 && props.y === 0){
-            setTopColStyle({'borderRight':'0px','borderBottom':'0px'});
-        }
-        if(props.x === 16 && props.y === 16){
-            setBotColStyle({'borderTop':'0px','borderLeft':'0px'});
-        }
-    },[]);
-
     let isUndefined = (arr,y,x) => {
-        if(typeof arr[y] != 'undefined' && typeof arr[y][x] != 'undefined'){
-            return true;
-        }else {
-            return false;
-        }
+        return typeof arr[y] !== 'undefined' && typeof arr[y][x] !== 'undefined';
     }
 
     let boardInit = () => {
@@ -106,7 +74,7 @@ export default function OmokBoardCol(props){
         setBoardArr(changeBoardArr);
     }
 
-    useEffect(() => {
+    let borderInit = () => {
         if(props.y === 16){
             hideBottomBorder();
         }
@@ -125,6 +93,10 @@ export default function OmokBoardCol(props){
         if(props.x === 16 && props.y === 16){
             setBotColStyle({'borderTop':'0px','borderLeft':'0px'});
         }
+    }
+    //border init
+    useEffect(() => {
+        borderInit();
     },[]);
 
     let isWinner = (y,x) => {
@@ -133,7 +105,7 @@ export default function OmokBoardCol(props){
 
         let right = x;
         for (let i = 1; i < 5; i++) {
-            if(isUndefined(boardArr,y,right+1) && boardArr[y][++right].status == turn){
+            if(isUndefined(boardArr,y,right+1) && boardArr[y][++right].status === turn){
                 count++;
             } else {
                 break;
@@ -142,7 +114,7 @@ export default function OmokBoardCol(props){
 
         let left = x;
         for (let i = 1; i < 5; i++) {
-            if(isUndefined(boardArr,y,left-1) && boardArr[y][--left].status == turn){
+            if(isUndefined(boardArr,y,left-1) && boardArr[y][--left].status === turn){
                 count++;
             } else {
                 break;
@@ -155,7 +127,7 @@ export default function OmokBoardCol(props){
             count = 1;
 
             for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,top+1,x) && boardArr[++top][x].status == turn){
+                if(isUndefined(boardArr,top+1,x) && boardArr[++top][x].status === turn){
                     count++;
                 } else {
                     break;
@@ -163,7 +135,7 @@ export default function OmokBoardCol(props){
             }
 
             for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,bottom-1,x) && boardArr[--bottom][x].status == turn){
+                if(isUndefined(boardArr,bottom-1,x) && boardArr[--bottom][x].status === turn){
                     count++;
                 } else {
                     break;
@@ -177,7 +149,7 @@ export default function OmokBoardCol(props){
             left = x;
             top = y;
             for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,top+1,left+1) && boardArr[++top][++left].status == turn){
+                if(isUndefined(boardArr,top+1,left+1) && boardArr[++top][++left].status === turn){
                     count++;
                 } else {
                     break;
@@ -187,7 +159,7 @@ export default function OmokBoardCol(props){
             right = x;
             bottom = y;
             for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,bottom-1,right-1) && boardArr[--bottom][--right].status == turn){
+                if(isUndefined(boardArr,bottom-1,right-1) && boardArr[--bottom][--right].status === turn){
                     count++;
                 } else {
                     break;
@@ -202,7 +174,7 @@ export default function OmokBoardCol(props){
             left = x;
             top = y;
             for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,top+1,left-1) && boardArr[++top][--left].status == turn){
+                if(isUndefined(boardArr,top+1,left-1) && boardArr[++top][--left].status === turn){
                     count++;
                 } else {
                     break;
@@ -212,7 +184,7 @@ export default function OmokBoardCol(props){
             right = x;
             bottom = y;
             for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,bottom-1,right+1) && boardArr[--bottom][++right].status == turn){
+                if(isUndefined(boardArr,bottom-1,right+1) && boardArr[--bottom][++right].status === turn){
                     count++;
                 } else {
                     break;
@@ -221,28 +193,29 @@ export default function OmokBoardCol(props){
         }
 
         if(count >= 5){
-            let winner = turn == 'B' ? '흑돌' : '백돌';
-
-            boardInit();
-            setTurn('B');
-            alert(`${winner}이 승리했습니다.`);
+            let winner = turn === 'B' ? '흑돌' : '백돌';
+            sweetAlert(winner+"이 승리했습니다.", "", "success")
+                .then(() => {
+                    setTurn('B');
+                    boardInit();
+                });
         }
-
     }
 
     let putStone = () => {
         if(props.status !== null){
-            alert('돌 위에 돌을 둘 수 없습니다.');
+            sweetAlert("돌 위에 돌을 둘 수 없습니다.", "", "warning").then(() => {});
             return;
         }
 
         let changeBoardArr = [...boardArr];
 
-        changeBoardArr[props.y][props.x].status = turn == 'B' ? 'B' : 'W';
+        changeBoardArr[props.y][props.x].status = turn === 'B' ? 'B' : 'W';
         setBoardArr(changeBoardArr);
+
         isWinner(props.y,props.x);
 
-        setTurn(turn == 'B' ? 'W' : 'B');
+        setTurn(turn === 'B' ? 'W' : 'B');
     }
 
     useEffect(() => {
@@ -259,24 +232,7 @@ export default function OmokBoardCol(props){
         } else {
             setTopColStyle({'opacity': 1});
             setBotColStyle({'opacity': 1});
-            if(props.y === 16){
-                hideBottomBorder();
-            }
-            if(props.x === 0){
-                hideLeftBorder()
-            }
-            if(props.x === 16){
-                hideRightBorder();
-            }
-            if(props.y === 0){
-                hideTopBorder();
-            }
-            if(props.x === 0 && props.y === 0){
-                setTopColStyle({'borderRight':'0px','borderBottom':'0px'});
-            }
-            if(props.x === 16 && props.y === 16){
-                setBotColStyle({'borderTop':'0px','borderLeft':'0px'});
-            }
+            borderInit();
         }
 
         setStone({
