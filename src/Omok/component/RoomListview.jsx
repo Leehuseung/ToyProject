@@ -9,7 +9,7 @@ import Paper from '@material-ui/core/Paper';
 import {TablePagination} from "@material-ui/core";
 import {useHistory} from 'react-router-dom';
 import {useModal} from "../../common/hooks";
-import AlertDialog from "./AlertDialog";
+import sweetAlert from 'sweetalert';
 
 export default function RoomListview(props) {
     const history = useHistory();
@@ -22,7 +22,7 @@ export default function RoomListview(props) {
         if (room.isAvailable) {
             history.push(`/omok/${room.id}`);
         } else {
-            toggle();
+            sweetAlert('This Room is Not Available','','warning');
         }
     }
 
@@ -69,11 +69,6 @@ export default function RoomListview(props) {
                 page={page}
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
-            />
-            <AlertDialog
-                open={show}
-                toggle={toggle}
-                message="This Room is Not Available"
             />
         </Paper>
     );
