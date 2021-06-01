@@ -5,7 +5,8 @@ import {appBarHeight} from "../../common/components/constants";
 import OmokBoardRow from './OmokBoardRow.jsx';
 import React from "react";
 import {GameContext} from '../js/game';
-import {useParams} from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
+import sweetAlert from "sweetalert";
 
 const useStyles = makeStyles({
     root: {
@@ -40,6 +41,7 @@ const useStyles = makeStyles({
 });
 
 export default function OmokRoom() {
+    const history = useHistory();
     const classes = useStyles();
     const {id} = useParams();
     const {loading, error, room} = useGameRoom(id);
@@ -48,7 +50,7 @@ export default function OmokRoom() {
     if (loading) return <>Loading...</>
     if (error) return <>Error...{error.toString()}</>
 
-    if (room) {
+    if (room && room.isAvailable) {
         return (
             <div className={classes.root}>
                 <div className={classes.rooms}>
@@ -68,6 +70,7 @@ export default function OmokRoom() {
             </div>
         );
     } else {
+        sweetAlert('This Room is Not Available','','warning').then(() => history.goBack());
         return <>This room is currently not available!</>;
     }
 }
