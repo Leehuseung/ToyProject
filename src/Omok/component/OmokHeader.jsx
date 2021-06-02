@@ -13,6 +13,7 @@ import {fade} from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 import {useUpdate} from "../js/hooks";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -125,6 +126,8 @@ export function OmokHeader(props) {
 }
 
 function MakeRoomDialog(props) {
+    const history = useHistory();
+
     const addRoom = useUpdate();
     const user = User(1, 'me');
     const [room, setRoom] = useState(Room(null, '', user.id, true, null));
@@ -201,14 +204,19 @@ function MakeRoomDialog(props) {
                     <Button
                         onClick={() => {
                             addRoom({
-                                title : room.title,
-                                room_password : room.password,
-                                user : user.id,
-                                isAvailable : 1,
-                                hasPassword : !!(room.password),
-                            }).then(res =>
-                                props.toggle()
-                            );
+                                title: room.title,
+                                password: room.password,
+                                user: user.id,
+                                isAvailable: 1,
+                                hasPassword: (room.password) ? 1 : 0,
+                            }).then(res => {
+                                if(res.data) {
+                                    props.toggle();
+                                    history.push(`/omok/${res.data.createRoom.id}`);
+                                } else {
+                                    alert('Error on creating room');
+                                }
+                            });
                         }}
                         color="primary"
                     >

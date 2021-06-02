@@ -16,11 +16,14 @@ export default function RoomListview(props) {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const [show, toggle] = useModal();
 
     const handleRoomClick = (room) => {
         if (room.isAvailable) {
-            history.push(`/omok/${room.id}`);
+            if(room.hasPassword) {
+                alert('TODO: Implement password input');
+            } else {
+                history.push(`/omok/${room.id}`);
+            }
         } else {
             sweetAlert('This Room is Not Available','','warning');
         }

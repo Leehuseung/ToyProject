@@ -17,12 +17,13 @@ const client = new ApolloClient({
 const restClient = new ApolloClient(
     {
         link: new RestLink({
-            uri: `${window.location.protocol}//49.247.146.76:8000/api`,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        }),
-        cache: new InMemoryCache()
+                uri: `${window.location.protocol}//49.247.146.76:8000/api`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            }
+        ),
+        cache: new InMemoryCache(),
     }
 );
 

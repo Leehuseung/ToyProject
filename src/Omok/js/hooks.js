@@ -2,12 +2,12 @@ import {useEffect, useState} from "react";
 import {User} from "./models";
 import {chatSocket} from "./socket";
 import {useMutation, useQuery} from "@apollo/client";
-import {CREATE_ROOM, FETCH_ROOMS, FETCH_ROOM, UPDATE_ROOM} from "./graphql";
+import {CREATE_ROOM, FETCH_ROOMS, FETCH_ROOM, UPDATE_ROOM, DELETE_ROOM} from "./graphql";
 
 export function useGameRoom(id) {
-    const {loading, error, data} = useQuery(FETCH_ROOM, {variables: {id:id}});
+    const {loading, error, data} = useQuery(FETCH_ROOM, {variables: {id: id}});
 
-    if(data){
+    if (data) {
         const room = data["currentRoom"];
         return {loading, error, room};
     }
@@ -56,37 +56,52 @@ export function useFetch() {
 }
 
 export function useUpdate() {
-    const updateRoom = async (room) => {
-        if(room.id) {
-            await update({variables: {input: JSON.stringify(room)}});
+    const updateRoom = (room) => {
+        if (room.id) {
+            return update({variables: {input: room}});
         } else {
-            await add({variables: {input: JSON.stringify(room)}});
+            return add({variables: {input: room}})
         }
     }
 
     const [add] = useMutation(CREATE_ROOM, {
-        update: (cache, {data: {room}}) => {
-            cache.modify({
-                fields: {
-                    rooms(existing) {
-                        return [...existing, room];
-                    }
-                },
-            });
+        onCompleted: (data) => {
+            console.log('done', data);
+        },
+        onError : () => {
+            console.log('error');
         },
     });
 
     const [update] = useMutation(UPDATE_ROOM, {
-        update: (cache, {data: {updated}}) => {
+
+    });
+
+    return updateRoom;
+}
+
+export function useDelete() {
+    const remove = (id) => deleteRoom({variables: {id:id}});
+
+    const [deleteRoom] = useMutation(DELETE_ROOM, {
+        update: (cache, {data: {deleteRoom}}) => {
+            cache.evict({fieldName: "notifications", broadcast: false});
             cache.modify({
                 fields: {
                     rooms(existing, {readField}) {
-                        return existing.map((r) => readField('id', r) === updated.id ? updated : r);
+                        console.log(existing.results);
+                        //return existing.filter((t) => readField('id', t) !== deleteRoom.id);
                     }
                 },
             });
         },
+        onCompleted: (data) => {
+            console.log('done', data);
+        },
+        onError : () => {
+            console.log('error');
+        },
     });
 
-    return updateRoom;
+    return remove;
 }

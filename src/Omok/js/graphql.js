@@ -3,9 +3,7 @@ import {gql} from '@apollo/client';
 
 export const FETCH_ROOMS = gql`
     query FetchRooms { 
-      rooms @rest(type: "RoomPayload", path: "/rooms",) {
-        count
-        next
+      rooms @rest(path: "/rooms",) {
         results {
             id,
             title,
@@ -20,7 +18,7 @@ export const FETCH_ROOMS = gql`
 
 export const FETCH_ROOM = gql`
     query FetchRoom { 
-      currentRoom(id: $id) @rest(type: "RoomPayload", path: "/rooms/{args.id}",) {
+      currentRoom(id: $id) @rest(type: "Room", path: "/rooms/{args.id}",) {
             id,
             title,
             user,
@@ -32,12 +30,8 @@ export const FETCH_ROOM = gql`
 
 export const CREATE_ROOM = gql`
     mutation CreateRoom { 
-        createRoom(input: $input) @rest(type: "Room", path: "/rooms", method: "POST") { 
-            id,
-            title,
-            user,
-            isAvailable,
-            hasPassword,
+        createRoom(input: $input) @rest(type: "Room", path: "/rooms/", method: "POST") { 
+            id
         } 
     }
 `;

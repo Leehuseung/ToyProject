@@ -1,12 +1,12 @@
 import OmokChat from "./OmokChat";
 import RoomListview from "./RoomListview";
 import {makeStyles} from "@material-ui/core";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {OmokHeader} from "./OmokHeader";
 import {appBarHeight} from "../../common/components/constants";
 import {useFetch} from "../js/hooks";
 import {Route, Switch} from "react-router-dom";
-import GameProvider from "../js/game";
+import {GameProvider} from "../js/game";
 import OmokRoom from "./OmokRoom";
 
 const useStyles = makeStyles({
@@ -40,26 +40,29 @@ export default function OmokMain() {
 
     useEffect(() => {
         if (data) {
-            setRooms(data.rooms.results ?? []);
+            setRooms(data.rooms.results);
         }
     }, [data]);
 
-    const onStateChanged = (status) => {
-        if (status === undefined) {
-            setRooms(roomList);
-        } else if (status) {
-            setRooms([...roomList.filter(room => room.isAvailable)]);
-        } else {
-            setRooms([...roomList.filter(room => !room.isAvailable)]);
+    const onStateChanged =  (status) => {
+        if(data) {
+            if (status === undefined) {
+                setRooms(data.rooms.results);
+            } else if (status) {
+                setRooms([...data.rooms.results.filter(room => room.isAvailable)]);
+            } else {
+                setRooms([...data.rooms.results.filter(room => !room.isAvailable)]);
+            }
         }
     }
 
     const onSearch = (text) => {
-        setRooms([...roomList.filter(room => room.title.includes(text))]);
+        setRooms([...data.rooms.results.filter(room => room.title.includes(text))]);
     }
 
     if (loading) return "Loading";
     if (error) return "Error";
+
 
     return (
         <GameProvider>
