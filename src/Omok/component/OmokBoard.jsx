@@ -1,9 +1,8 @@
 import OmokBoardRow from "./OmokBoardRow";
-import React, {useEffect} from "react";
+import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {appBarHeight} from "../../common/components/constants";
 import {GameContext} from "../js/game";
-import {socket} from "../js/socket";
 
 const useStyles = makeStyles({
     rooms: {
@@ -32,27 +31,11 @@ const useStyles = makeStyles({
 
 export default function OmokBoard(props){
     const classes = useStyles();
-    const { getTurnState,boardArr,setBoardArr } = React.useContext(GameContext);
-    let [turn,setTurn] = getTurnState;
-
-    useEffect(() => {
-        socket.on('getBoard', (data) => {
-            console.log('data',data);
-            setTurn(data.turn === 'B' ? 'W' : 'B');
-
-            let changeBoardArr = [...boardArr];
-            //소켓에서 넘어온 board로 변경이
-            changeBoardArr = data.boardArr;
-            setBoardArr(changeBoardArr);
-
-        });
-    },[]);
-
-
+    const { boardArr } = React.useContext(GameContext);
 
     return (
         <div className={classes.rooms}>
-            <div className={classes.omokTop}></div>
+            <div className={classes.omokTop}> </div>
             <div className={classes.omokBoard}>
                 {
                     boardArr.map(

@@ -1,6 +1,6 @@
 import {makeStyles} from "@material-ui/core/styles";
 import OmokBoardCol from "./OmokBoardCol.jsx";
-import React, {useState} from 'react';
+import React from 'react';
 
 const useStyles = makeStyles({
     boardRow: {
@@ -15,7 +15,7 @@ export default function OmokBoardRow (props){
         <div className={classes.boardRow}>
             {
                 props.row.map(
-                    row => <OmokBoardCol x={row.axisX} y={row.axisY}  status={row.status} id={props.id}/>
+                    row => <OmokBoardCol style={{}} x={row.axisX} y={row.axisY}  status={row.status} id={props.id}/>
                 )
             }
         </div>

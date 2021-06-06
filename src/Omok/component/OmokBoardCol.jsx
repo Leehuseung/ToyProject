@@ -9,10 +9,10 @@ const useStyles = makeStyles({
         width: '29px',
         height: '29px',
         display: 'inline-block',
+        cursor: 'pointer',
         '&:hover': {
             backgroundColor: '#FD7E14'
         },
-        cursor: 'pointer'
     },
     boardInnerCol_1: {
         width: '15px',
@@ -34,14 +34,14 @@ const useStyles = makeStyles({
 
 export default function OmokBoardCol(props){
     const classes = useStyles();
-    const { getTurnState,boardArr,setBoardArr } = React.useContext(GameContext);
 
-    let [stoneStyle,setStone] = useState({});
+    const { getTurnState, boardArr, userTurn } = React.useContext(GameContext);
 
+    let [stoneStyle,setStoneStyle] = useState({});
     let [topColStyle,setTopColStyle] = useState({});
     let [botColStyle,setBotColStyle] = useState({});
 
-    let [turn,setTurn] = getTurnState;
+    let [turn] = getTurnState;
 
     let hideStoneBackground = (status) => {
         if(status == null){
@@ -51,7 +51,6 @@ export default function OmokBoardCol(props){
             setTopColStyle({'opacity': 0});
             setBotColStyle({'opacity': 0});
         }
-
     }
 
     let hideTopBorder = () => { setTopColStyle({'borderRight':'0px'}) }
@@ -59,21 +58,6 @@ export default function OmokBoardCol(props){
 
     let hideBottomBorder = () => { setBotColStyle({'borderLeft':'0px'}) }
     let hideRightBorder = () => { setBotColStyle({'borderTop':'0px'}) }
-
-    let isUndefined = (arr,y,x) => {
-        return typeof arr[y] !== 'undefined' && typeof arr[y][x] !== 'undefined';
-    }
-
-    let boardInit = () => {
-        let changeBoardArr = [...boardArr];
-
-        for (let i = 0; i < changeBoardArr.length; i++) {
-            for (let j = 0; j < changeBoardArr[i].length; j++) {
-                changeBoardArr[i][j].status = null;
-            }
-        }
-        setBoardArr(changeBoardArr);
-    }
 
     let borderInit = () => {
         if(props.y === 16){
@@ -95,115 +79,13 @@ export default function OmokBoardCol(props){
             setBotColStyle({'borderTop':'0px','borderLeft':'0px'});
         }
     }
-    //border init
-    useEffect(() => {
-        borderInit();
-    },[]);
-
-    let isWinner = (y,x) => {
-
-        let count = 1;
-
-        let right = x;
-        for (let i = 1; i < 5; i++) {
-            if(isUndefined(boardArr,y,right+1) && boardArr[y][++right].status === turn){
-                count++;
-            } else {
-                break;
-            }
-        }
-
-        let left = x;
-        for (let i = 1; i < 5; i++) {
-            if(isUndefined(boardArr,y,left-1) && boardArr[y][--left].status === turn){
-                count++;
-            } else {
-                break;
-            }
-        }
-
-        let top = y;
-        let bottom = y;
-        if(count < 5){
-            count = 1;
-
-            for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,top+1,x) && boardArr[++top][x].status === turn){
-                    count++;
-                } else {
-                    break;
-                }
-            }
-
-            for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,bottom-1,x) && boardArr[--bottom][x].status === turn){
-                    count++;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        if(count < 5){
-            count = 1;
-
-            left = x;
-            top = y;
-            for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,top+1,left+1) && boardArr[++top][++left].status === turn){
-                    count++;
-                } else {
-                    break;
-                }
-            }
-
-            right = x;
-            bottom = y;
-            for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,bottom-1,right-1) && boardArr[--bottom][--right].status === turn){
-                    count++;
-                } else {
-                    break;
-                }
-            }
-        }
-
-
-        if(count < 5){
-            count = 1;
-
-            left = x;
-            top = y;
-            for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,top+1,left-1) && boardArr[++top][--left].status === turn){
-                    count++;
-                } else {
-                    break;
-                }
-            }
-
-            right = x;
-            bottom = y;
-            for (let i = 1; i < 5; i++) {
-                if(isUndefined(boardArr,bottom-1,right+1) && boardArr[--bottom][++right].status === turn){
-                    count++;
-                } else {
-                    break;
-                }
-            }
-        }
-
-        if(count >= 5){
-            let winner = turn === 'B' ? '흑돌' : '백돌';
-            sweetAlert(winner+"이 승리했습니다.", "", "success")
-                .then(() => {
-                    setTurn('B');
-                    boardInit();
-                });
-        }
-    }
 
     let putStone = () => {
+
+        if(turn !== userTurn){
+            return;
+        }
+
         if(props.status !== null){
             sweetAlert("돌 위에 돌을 둘 수 없습니다.", "", "warning").then(() => {});
             return;
@@ -219,8 +101,6 @@ export default function OmokBoardCol(props){
             x: props.x,
             y: props.y
         });
-
-        isWinner(props.y,props.x);
     }
 
     useEffect(() => {
@@ -240,18 +120,42 @@ export default function OmokBoardCol(props){
             borderInit();
         }
 
-        setStone({
+        setStoneStyle({
             'backgroundColor':color,
             'border-radius': '50%',
-            'boxShadow' : boxShadow
+            'boxShadow' : boxShadow,
         });
 
     }, [boardArr]);
+
+    let mouseEnter = () => {
+        if(turn !== userTurn){
+            let changeStoneStyle =  Object.assign({}, stoneStyle);
+            changeStoneStyle.cursor = 'default';
+            if(props.status == null){
+                changeStoneStyle.backgroundColor = '#FFC078';
+            }
+            setStoneStyle(changeStoneStyle);
+        }
+    }
+
+    let mouseLeave = () => {
+        if(turn !== userTurn){
+            let changeStoneStyle =  Object.assign({}, stoneStyle);
+            changeStoneStyle.cursor = 'default';
+            if(props.status == null){
+                changeStoneStyle.backgroundColor = '#FFC078';
+            }
+            setStoneStyle(changeStoneStyle);
+        }
+    }
 
     return(
         <div className={classes.boardCol}
              onClick={putStone}
              style={stoneStyle}
+             onMouseEnter={mouseEnter}
+             onMouseLeave={mouseLeave}
         >
             <div className={classes.boardInnerCol_1}
                  style={topColStyle}

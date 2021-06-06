@@ -23,9 +23,10 @@ module.exports = () => {
         });
 
         socket.on('join', (data) => {
-            console.log('joining', data);
             socket.join(data.room);
+            //console.log('room : '+data.room+"    count : "+ io.sockets.adapter.rooms.get(data.room).size);
             io.to(data.room).emit('announce', `${data.name} entered the chat room`);
+            socket.emit('setTurn',io.sockets.adapter.rooms.get(data.room).size);
         });
 
         socket.on('leave', (data) => {
@@ -35,10 +36,7 @@ module.exports = () => {
         });
 
         socket.on('putStone', (data) => {
-            io.to(data.room).emit('getBoard', {
-                'boardArr': data.boardArr,
-                'turn': data.turn
-            });
+            io.to(data.room).emit('getBoard', data);
         });
 
         // 접속한 클라이언트의 정보가 수신되면
@@ -91,4 +89,3 @@ module.exports = () => {
     });
 
 };
-
