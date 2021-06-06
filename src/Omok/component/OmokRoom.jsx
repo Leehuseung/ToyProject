@@ -50,7 +50,7 @@ export default function OmokRoom() {
     if (loading) return <>Loading...</>
     if (error) return <>Error...{error.toString()}</>
 
-    if (room && room.isAvailable) {
+    if (room && room.isAvailable===1) {
         return (
             <div className={classes.root}>
                 <div className={classes.rooms}>

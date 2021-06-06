@@ -23,7 +23,7 @@ const resolvers = {
         todos: async () => todos.get(),
     },
     Mutation: {
-        addTodo: async (_, args) => {
+        createTodo: async (_, args) => {
             const todo = {
                 text: args.text,
                 isCompleted: args.isCompleted,

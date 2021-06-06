@@ -8,7 +8,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import {TablePagination} from "@material-ui/core";
 import {useHistory} from 'react-router-dom';
-import {useModal} from "../../common/hooks";
 import sweetAlert from 'sweetalert';
 
 export default function RoomListview(props) {

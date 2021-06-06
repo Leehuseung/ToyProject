@@ -2,7 +2,7 @@ import {gql} from '@apollo/client';
 
 
 export const FETCH_TODOS = gql`
-    query FetchTodos { 
+    query { 
       todos {
         id
         text
@@ -13,13 +13,14 @@ export const FETCH_TODOS = gql`
 
 export const ADD_TODO = gql`
     mutation AddTodos($text: String!, $isCompleted: Boolean) {
-      addTodo(text: $text, isCompleted: $isCompleted) {
+      createTodo(text: $text, isCompleted: $isCompleted) {
         id
         text
         isCompleted
       }
     }
 `;
+
 
 export const UPDATE_TODO = gql`
     mutation UpdateTodo($id: ID!, $text: String!, $isCompleted: Boolean) {

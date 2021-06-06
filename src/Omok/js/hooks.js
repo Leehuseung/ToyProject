@@ -2,13 +2,13 @@ import {useEffect, useState} from "react";
 import {User} from "./models";
 import {chatSocket} from "./socket";
 import {useMutation, useQuery} from "@apollo/client";
-import {CREATE_ROOM, FETCH_ROOMS, FETCH_ROOM, UPDATE_ROOM, DELETE_ROOM} from "./graphql";
+import {CREATE_ROOM, FETCH_ROOMS, FETCH_ROOM, DELETE_ROOM} from "./graphql";
 
 export function useGameRoom(id) {
     const {loading, error, data} = useQuery(FETCH_ROOM, {variables: {id: id}});
 
     if (data) {
-        const room = data["currentRoom"];
+        const room = data["room"];
         return {loading, error, room};
     }
 
@@ -58,7 +58,7 @@ export function useFetch() {
 export function useUpdate() {
     const updateRoom = (room) => {
         if (room.id) {
-            return update({variables: {input: room}});
+            return add({variables: {input: room}});
         } else {
             return add({variables: {input: room}})
         }
@@ -73,9 +73,6 @@ export function useUpdate() {
         },
     });
 
-    const [update] = useMutation(UPDATE_ROOM, {
-
-    });
 
     return updateRoom;
 }

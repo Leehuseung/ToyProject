@@ -29,6 +29,7 @@ export function useUpdate() {
 
     const [update] = useMutation(UPDATE_TODO, {
         update: (cache, {data: {updateTodo}}) => {
+            console.log('result:',updateTodo)
             cache.modify({
                 fields: {
                     todos(existing, {readField}) {

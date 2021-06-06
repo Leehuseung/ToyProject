@@ -9,7 +9,9 @@ import {RestLink} from "apollo-link-rest";
 
 
 const client = new ApolloClient({
-        uri: `${window.location.protocol}//${window.location.hostname}:5050/gql`,
+        //uri: `${window.location.protocol}//${window.location.hostname}:5050/gql`,
+        //uri: `${window.location.protocol}//49.247.146.76:8000/graphql/`,
+        uri: `${window.location.protocol}//localhost:8000/graphql/`,
         cache: new InMemoryCache(),
     }
 );
@@ -17,7 +19,7 @@ const client = new ApolloClient({
 const restClient = new ApolloClient(
     {
         link: new RestLink({
-                uri: `${window.location.protocol}//49.247.146.76:8000/api`,
+                uri: `${window.location.protocol}//49.247.146.76:8000/omok_api`,
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -53,7 +55,7 @@ export const routes = [
         text: "오목",
         icon: () => <SportsEsports/>,
         render: () => (
-            <ApolloProvider client={restClient}>
+            <ApolloProvider client={client}>
                 <OmokMain/>
             </ApolloProvider>
         )
