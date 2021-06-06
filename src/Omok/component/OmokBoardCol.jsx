@@ -2,6 +2,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import React,{useState,useEffect} from "react";
 import {GameContext} from '../js/game';
 import sweetAlert from 'sweetalert';
+import {socket} from "../js/socket";
 
 const useStyles = makeStyles({
     boardCol: {
@@ -33,14 +34,14 @@ const useStyles = makeStyles({
 
 export default function OmokBoardCol(props){
     const classes = useStyles();
-    const { turning,boardArr,setBoardArr } = React.useContext(GameContext);
+    const { getTurnState,boardArr,setBoardArr } = React.useContext(GameContext);
 
     let [stoneStyle,setStone] = useState({});
 
     let [topColStyle,setTopColStyle] = useState({});
     let [botColStyle,setBotColStyle] = useState({});
 
-    let [turn,setTurn] = turning;
+    let [turn,setTurn] = getTurnState;
 
     let hideStoneBackground = (status) => {
         if(status == null){
@@ -209,13 +210,17 @@ export default function OmokBoardCol(props){
         }
 
         let changeBoardArr = [...boardArr];
-
         changeBoardArr[props.y][props.x].status = turn === 'B' ? 'B' : 'W';
-        setBoardArr(changeBoardArr);
+
+        socket.emit('putStone', {
+            room: props.id,
+            turn: turn,
+            boardArr: changeBoardArr,
+            x: props.x,
+            y: props.y
+        });
 
         isWinner(props.y,props.x);
-
-        setTurn(turn === 'B' ? 'W' : 'B');
     }
 
     useEffect(() => {

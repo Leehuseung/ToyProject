@@ -65,7 +65,7 @@ export default function OmokMain() {
 
 
     return (
-        <GameProvider>
+        <>
            {/* Nested Routing Applied To Wrap
                ApolloClient and GameProvider to Whole Omok App*/}
             <Switch>
@@ -87,10 +87,12 @@ export default function OmokMain() {
                     </div>
                 </Route>
                 <Route path={`/omok/:id`}>
-                    <OmokRoom/>
+                    <GameProvider>
+                        <OmokRoom/>
+                    </GameProvider>
                 </Route>
             </Switch>
-        </GameProvider>
+        </>
     );
 }
 

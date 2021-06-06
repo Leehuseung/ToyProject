@@ -1,3 +1,4 @@
+
 module.exports = () => {
     let server = require('http').createServer();
     let io = require('socket.io')(server, {
@@ -10,6 +11,11 @@ module.exports = () => {
         socket.on('chat', function (data) {
             console.log('chat', data);
             io.to(data.room).emit('res', {name: data.name, message: data.message});
+        });
+
+        socket.on('game', function (data) {
+            console.log('game', data);
+            io.to('game').emit('res', {name: 'aa'});
         });
 
         socket.on('disconnect', function () {
@@ -26,6 +32,13 @@ module.exports = () => {
             console.log('leaving', data);
             socket.leave(data.room);
             io.to(data.room).emit('announce', `${data.name} leaved the chat room`);
+        });
+
+        socket.on('putStone', (data) => {
+            io.to(data.room).emit('getBoard', {
+                'boardArr': data.boardArr,
+                'turn': data.turn
+            });
         });
 
         // 접속한 클라이언트의 정보가 수신되면

@@ -1,5 +1,5 @@
+import React, {useEffect, useState} from 'react'
 
-import React, {useState} from 'react'
 
 export const GameContext = React.createContext(null)
 
@@ -21,11 +21,11 @@ export function GameProvider ({ children }) {
         }
         arr.push(colArr);
     }
-
+    //오목판 status를 배열로 관리
     let [boardArr,setBoardArr] = useState(arr);
 
     const store = {
-        turning: [turn, setTurn],
+        getTurnState: [turn, setTurn],
         boardArr: boardArr,
         setBoardArr : setBoardArr
     }

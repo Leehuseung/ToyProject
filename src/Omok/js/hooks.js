@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {User} from "./models";
-import {chatSocket} from "./socket";
+import {socket} from "./socket";
 import {useMutation, useQuery} from "@apollo/client";
 import {CREATE_ROOM, FETCH_ROOMS, FETCH_ROOM, UPDATE_ROOM, DELETE_ROOM} from "./graphql";
 
@@ -18,7 +18,7 @@ export function useGameRoom(id) {
 export function useChatting(userId, roomId) {
     const sendMessage = (msg) => {
         if (msg.length > 0) {
-            chatSocket.emit('chat', {
+            socket.emit('chat', {
                 room: roomId,
                 name: user.name,
                 message: msg,
@@ -31,19 +31,19 @@ export function useChatting(userId, roomId) {
 
     useEffect(() => {
         setUser(User(userId, `Guest ${userId}`));
-        chatSocket.emit('join', {room: roomId, name: user.name});
+        socket.emit('join', {room: roomId, name: user.name});
 
-        chatSocket.on('announce', (msg) => {
+        socket.on('announce', (msg) => {
             addLog(prevState => prevState + `[ ${msg} ]\n`);
         });
 
-        chatSocket.on('res', (data) => {
+        socket.on('res', (data) => {
             addLog(prevState => prevState + `${data.name} : ` + data.message + '\n');
         });
 
         return () => {
-            chatSocket.emit('leave', {room: roomId, name: user.name})
-            chatSocket.removeAllListeners();
+            socket.emit('leave', {room: roomId, name: user.name})
+            socket.removeAllListeners();
         }
     }, [userId, roomId, user.name]);
 
