@@ -1,12 +1,12 @@
-import OmokChat from "./OmokChat";
-import RoomListview from "./RoomListview";
+import OmokChat from "../OmokChat";
+import RoomListview from "../RoomListview";
 import {makeStyles} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
-import {OmokHeader} from "./OmokHeader";
-import {appBarHeight} from "../../common/components/constants";
-import {useFetch} from "../js/hooks";
+import {OmokHeader} from "../OmokHeader";
+import {appBarHeight} from "../../../common/components/constants";
+import {useFetch} from "../../js/hooks";
 import {Route, Switch} from "react-router-dom";
-import {GameProvider} from "../js/game";
+import {GameProvider} from "../../js/game";
 import OmokRoom from "./OmokRoom";
 
 const useStyles = makeStyles({
