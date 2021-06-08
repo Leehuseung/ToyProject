@@ -4,6 +4,28 @@ import {socket} from "./socket";
 import {useMutation, useQuery} from "@apollo/client";
 import {CREATE_ROOM, FETCH_ROOMS, FETCH_ROOM, DELETE_ROOM} from "./graphql";
 
+
+export function useGameUser() {
+    const [user, setUser] = useState(null);
+
+    const retry = () => fetch(`${window.location.protocol}//49.247.146.76:8000/session/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(res =>
+        res.json()).then(response => {
+            console.log('Success:', JSON.stringify(response))
+            setUser(response);
+        }
+    ).catch(error => console.error('Error:', error));
+
+    useEffect(async () => await retry(), []);
+
+    return [user, retry];
+}
+
+
 export function useGameRoom(id) {
     const {loading, error, data} = useQuery(FETCH_ROOM, {variables: {id: id}});
 
@@ -68,7 +90,7 @@ export function useUpdate() {
         onCompleted: (data) => {
             console.log('done', data);
         },
-        onError : () => {
+        onError: () => {
             console.log('error');
         },
     });
@@ -78,7 +100,7 @@ export function useUpdate() {
 }
 
 export function useDelete() {
-    const remove = (id) => deleteRoom({variables: {id:id}});
+    const remove = (id) => deleteRoom({variables: {id: id}});
 
     const [deleteRoom] = useMutation(DELETE_ROOM, {
         update: (cache, {data: {deleteRoom}}) => {
@@ -95,7 +117,7 @@ export function useDelete() {
         onCompleted: (data) => {
             console.log('done', data);
         },
-        onError : () => {
+        onError: () => {
             console.log('error');
         },
     });

@@ -2,9 +2,9 @@ import {Home, ListAlt, SportsEsports} from "@material-ui/icons";
 import {DndProvider} from "react-dnd";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import TodoLayout from "../TodoList/component/TodoLayout";
-import OmokMain from "../Omok/component/OmokMain";
 import React from "react";
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
+import {OmokHome} from "../Omok/component/pages/OmokHome";
 
 const client = new ApolloClient({
         //uri: `${window.location.protocol}//${window.location.hostname}:5050/gql`,
@@ -39,7 +39,7 @@ export const routes = [
         icon: () => <SportsEsports/>,
         render: () => (
             <ApolloProvider client={client}>
-                <OmokMain/>
+                <OmokHome/>
             </ApolloProvider>
         )
     },

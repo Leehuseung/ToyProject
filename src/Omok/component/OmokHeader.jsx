@@ -2,7 +2,7 @@ import {Room, User} from "../js/models";
 import {makeStyles, Menu, MenuItem} from "@material-ui/core";
 import {useModal} from "../../common/hooks";
 import Button from "@material-ui/core/Button";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -14,6 +14,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
 import {useUpdate} from "../js/hooks";
 import {useHistory} from "react-router-dom";
+import {UserContext} from "./pages/OmokHome";
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -128,8 +129,8 @@ export function OmokHeader(props) {
 function MakeRoomDialog(props) {
     const history = useHistory();
 
+    const user = useContext(UserContext);
     const addRoom = useUpdate();
-    const user = User(1, 'me');
     const [room, setRoom] = useState(Room(null, '', user.id, true, null));
     const handleTitleChange = (evt) => {
         setRoom(
