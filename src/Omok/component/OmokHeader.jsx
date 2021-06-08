@@ -206,11 +206,11 @@ function MakeRoomDialog(props) {
                             addRoom({
                                 title: room.title,
                                 password: room.password,
-                                user: user.id,
+                                user: {id: user.id, name: user.id},
                                 isAvailable: 1,
                                 hasPassword: (room.password) ? 1 : 0,
                             }).then(res => {
-                                if(res.data) {
+                                if (res.data) {
                                     props.toggle();
                                     history.push(`/omok/${res.data.createRoom.id}`);
                                 } else {
@@ -227,4 +227,5 @@ function MakeRoomDialog(props) {
         </div>
     );
 }
+
 
