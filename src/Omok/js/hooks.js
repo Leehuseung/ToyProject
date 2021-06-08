@@ -58,9 +58,9 @@ export function useFetch() {
 export function useUpdate() {
     const updateRoom = (room) => {
         if (room.id) {
-            return add({variables: {input: room}});
+            return add({variables: room});
         } else {
-            return add({variables: {input: room}})
+            return add({variables: room})
         }
     }
 

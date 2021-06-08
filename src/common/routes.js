@@ -5,30 +5,13 @@ import TodoLayout from "../TodoList/component/TodoLayout";
 import OmokMain from "../Omok/component/OmokMain";
 import React from "react";
 import {ApolloClient, ApolloProvider, InMemoryCache} from "@apollo/client";
-import {RestLink} from "apollo-link-rest";
-
 
 const client = new ApolloClient({
         //uri: `${window.location.protocol}//${window.location.hostname}:5050/gql`,
-        //uri: `${window.location.protocol}//49.247.146.76:8000/graphql/`,
-        uri: `${window.location.protocol}//localhost:8000/graphql/`,
+        uri: `${window.location.protocol}//49.247.146.76:8000/graphql/`,
         cache: new InMemoryCache(),
     }
 );
-
-const restClient = new ApolloClient(
-    {
-        link: new RestLink({
-                uri: `${window.location.protocol}//49.247.146.76:8000/omok_api`,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            }
-        ),
-        cache: new InMemoryCache(),
-    }
-);
-
 
 export const routes = [
     {
