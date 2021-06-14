@@ -43,8 +43,7 @@ const useStyles = makeStyles((theme) => ({
 export default function OmokChat(props) {
     const classes = useStyles();
     const bottomRef = useRef();
-    const id = useRef(Math.floor(Math.random() * 100));
-    const [logs, sendMessage] = useChatting(id.current, props.room);
+    const [logs, sendMessage] = useChatting(props.room);
     const [inputText, setInputText] = useState('');
 
     useEffect(() => {

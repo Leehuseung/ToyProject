@@ -38,7 +38,7 @@ export default function OmokMain() {
     const [roomList, setRooms] = useState([]);
     const {loading, error, data} = useFetch();
 
-    useEffect(async () => {
+    useEffect( () => {
         if (data) {
             setRooms(data.rooms);
         }

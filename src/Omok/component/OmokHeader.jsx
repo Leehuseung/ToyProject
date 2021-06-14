@@ -1,4 +1,4 @@
-import {Room, User} from "../js/models";
+import {Room} from "../js/models";
 import {makeStyles, Menu, MenuItem} from "@material-ui/core";
 import {useModal} from "../../common/hooks";
 import Button from "@material-ui/core/Button";

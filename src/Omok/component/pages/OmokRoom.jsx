@@ -52,7 +52,6 @@ export default function OmokRoom() {
 
     if (room && room.isAvailable===1) {
         return (
-
             <div className={classes.root}>
                 <OmokBoard id={id}/>
                 <OmokChat
