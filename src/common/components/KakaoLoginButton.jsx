@@ -34,6 +34,7 @@ export default function KakaoLoginButton() {
     return (
       <div>
           <img className={classes.kakaoButton}
+               style={{display:'none'}}
                src={loginImage}
                alt="kakao login"
                onClick={login}
