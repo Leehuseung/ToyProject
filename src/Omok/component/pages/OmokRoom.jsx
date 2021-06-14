@@ -1,10 +1,10 @@
 import {makeStyles} from '@material-ui/core/styles';
-import OmokChat from "./OmokChat";
-import {useGameRoom} from "../js/hooks";
-import {appBarHeight} from "../../common/components/constants";
-import OmokBoard from "./OmokBoard.jsx";
+import OmokChat from "../OmokChat";
+import {useGameRoom} from "../../js/hooks";
+import {appBarHeight} from "../../../common/components/constants";
+import OmokBoard from "../OmokBoard.jsx";
 import React from "react";
-import {GameContext} from '../js/game';
+import {GameContext} from '../../js/game';
 import {useHistory, useParams} from 'react-router-dom';
 import sweetAlert from "sweetalert";
 
@@ -52,7 +52,6 @@ export default function OmokRoom() {
 
     if (room && room.isAvailable===1) {
         return (
-
             <div className={classes.root}>
                 <OmokBoard id={id}/>
                 <OmokChat

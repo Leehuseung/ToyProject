@@ -1,8 +1,39 @@
-import {useEffect, useState} from "react";
-import {User} from "./models";
+import {useContext, useEffect, useState} from "react";
 import {socket} from "./socket";
 import {useMutation, useQuery} from "@apollo/client";
 import {CREATE_ROOM, FETCH_ROOMS, FETCH_ROOM, DELETE_ROOM} from "./graphql";
+import {UserContext} from "../component/pages/OmokHome";
+
+
+export function useGameUser() {
+    const [user, setUser] = useState(null);
+    //const url = `${window.location.protocol}//127.0.0.1:8000/omok/session/`;
+    const url = `http://49.247.146.76:8000/omok/session/`;
+    useEffect(() => {
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body : JSON.stringify({
+                "sid" : window.sessionStorage.getItem('sid') ?? ''
+            })
+        }).then(res => {
+                res.json().then(response => {
+                    window.sessionStorage.setItem('sid', response.id);
+                    window.sessionStorage.setItem('name', response.name);
+                    setUser({id: response.id, name: response.name});
+                }).catch(e => {
+                    console.log('Response Error', e);
+                })
+            }
+        ).catch(error => {
+            console.log('Fetch Error', error)
+        });
+    }, [url]);
+    return user;
+}
+
 
 export function useGameRoom(id) {
     const {loading, error, data} = useQuery(FETCH_ROOM, {variables: {id: id}});
@@ -15,7 +46,7 @@ export function useGameRoom(id) {
     return {loading, error, data};
 }
 
-export function useChatting(userId, roomId) {
+export function useChatting(roomId) {
     const sendMessage = (msg) => {
         if (msg.length > 0) {
             socket.emit('chat', {
@@ -26,11 +57,11 @@ export function useChatting(userId, roomId) {
         }
     };
 
-    const [user, setUser] = useState(User(userId, `Guest ${userId}`));
+    const user = useContext(UserContext);
     const [log, addLog] = useState('');
 
     useEffect(() => {
-        setUser(User(userId, `Guest ${userId}`));
+        console.log('user is: ', {id: user.id, name: user.name});
         socket.emit('join', {room: roomId, name: user.name});
 
         socket.on('announce', (msg) => {
@@ -45,7 +76,7 @@ export function useChatting(userId, roomId) {
             socket.emit('leave', {room: roomId, name: user.name})
             socket.removeAllListeners();
         }
-    }, [userId, roomId, user.name]);
+    }, [roomId, user.name]);
 
     return [log, sendMessage];
 }
@@ -68,7 +99,7 @@ export function useUpdate() {
         onCompleted: (data) => {
             console.log('done', data);
         },
-        onError : () => {
+        onError: () => {
             console.log('error');
         },
     });
@@ -78,7 +109,7 @@ export function useUpdate() {
 }
 
 export function useDelete() {
-    const remove = (id) => deleteRoom({variables: {id:id}});
+    const remove = (id) => deleteRoom({variables: {id: id}});
 
     const [deleteRoom] = useMutation(DELETE_ROOM, {
         update: (cache, {data: {deleteRoom}}) => {
@@ -95,7 +126,7 @@ export function useDelete() {
         onCompleted: (data) => {
             console.log('done', data);
         },
-        onError : () => {
+        onError: () => {
             console.log('error');
         },
     });
