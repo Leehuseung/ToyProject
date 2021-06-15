@@ -1,9 +1,7 @@
 import React from "react";
-import {useGameUser} from "../../js/hooks";
 import OmokMain from "./OmokMain";
 import {Button, makeStyles} from "@material-ui/core";
-import {fade} from "@material-ui/core/styles";
-
+import useUser from "../../js/hooks/useUser";
 
 export const UserContext = React.createContext(null);
 
@@ -23,9 +21,10 @@ const useStyles = makeStyles((theme) => ({
 
 export function OmokHome() {
     const classes = useStyles();
-    const user = useGameUser();
+    const user = useUser();
 
     if(user){
+        console.log('rendering with user')
         return (
             <UserContext.Provider value = {user}>
                 <OmokMain/>

@@ -1,13 +1,15 @@
 import OmokChat from "../OmokChat";
 import RoomListview from "../RoomListview";
 import {makeStyles} from "@material-ui/core";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {OmokHeader} from "../OmokHeader";
 import {appBarHeight} from "../../../common/components/constants";
-import {useFetch} from "../../js/hooks";
 import {Route, Switch} from "react-router-dom";
 import {GameProvider} from "../../js/game";
 import OmokRoom from "./OmokRoom";
+import {RoomListProvider} from "../RoomListProvider";
+import {useQuery} from "@apollo/client";
+import {FETCH_ROOMS} from "../../js/graphql";
 
 const useStyles = makeStyles({
     root: {
@@ -33,57 +35,36 @@ const useStyles = makeStyles({
     },
 });
 
+
 export default function OmokMain() {
     const classes = useStyles();
-    const [roomList, setRooms] = useState([]);
-    const {loading, error, data} = useFetch();
-
-    useEffect( () => {
-        if (data) {
-            setRooms(data.rooms);
-        }
-    }, [data]);
-
-    const onStateChanged =  (status) => {
-        if(data) {
-            if (status === undefined) {
-                setRooms(data.rooms);
-            } else if (status) {
-                setRooms([...data.rooms.filter(room => room.isAvailable)]);
-            } else {
-                setRooms([...data.rooms.filter(room => !room.isAvailable)]);
-            }
-        }
-    }
-
-    const onSearch = (text) => {
-        setRooms([...data.rooms.filter(room => room.title.includes(text))]);
-    }
+    const {loading, error, data} = useQuery(FETCH_ROOMS);
 
     if (loading) return "Loading";
     if (error) return "Error";
 
     return (
         <>
-           {/* Nested Routing Applied To Wrap
+            {/* Nested Routing Applied To Wrap
                ApolloClient and GameProvider to Whole Omok App*/}
             <Switch>
                 <Route exact path={'/omok'}>
-                    <div className={classes.root}>
-                        <div className={classes.rooms}>
-                            <OmokHeader
-                                onStateChanged={onStateChanged}
-                                onSearch={onSearch}
-                            />
-                            <div className={classes.listView}>
-                                <RoomListview rooms={roomList}/>
+                    <RoomListProvider
+                        rooms={data.rooms ?? []}
+                    >
+                        <div className={classes.root}>
+                            <div className={classes.rooms}>
+                                <OmokHeader/>
+                                <div className={classes.listView}>
+                                    <RoomListview/>
+                                </div>
                             </div>
+                            <OmokChat
+                                title="대기실"
+                                room='lobby'
+                            />
                         </div>
-                        <OmokChat
-                            title="대기실"
-                            room='lobby'
-                        />
-                    </div>
+                    </RoomListProvider>
                 </Route>
                 <Route path={`/omok/:id`}>
                     <GameProvider>

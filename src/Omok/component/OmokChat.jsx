@@ -1,8 +1,8 @@
 import React, {useState, useEffect, useRef} from "react";
 import {fade, makeStyles} from "@material-ui/core/styles";
-import {useChatting} from "../js/hooks";
 import InputBase from "@material-ui/core/InputBase";
 import {appBarHeight} from "../../common/components/constants";
+import useChatting from "../js/hooks/useChatting";
 
 const useStyles = makeStyles((theme) => ({
     container: {
