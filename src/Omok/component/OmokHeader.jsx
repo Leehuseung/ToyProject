@@ -12,9 +12,10 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {fade} from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
-import {useUpdate} from "../js/hooks";
+import {useUpdate} from "../js/hooks/useMutations";
 import {useHistory} from "react-router-dom";
 import {UserContext} from "./pages/OmokHome";
+import {RoomListContext} from "./RoomListProvider";
 
 const useStyles = makeStyles((theme) => ({
     header: {
@@ -56,8 +57,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export function OmokHeader(props) {
+export function OmokHeader() {
     const classes = useStyles();
+    const {roomList, setRoomList, handleStatus, handleSearch} = useContext(RoomListContext);
     const [show, toggle] = useModal();
     const [anchorEl, setAnchorEl] = useState(null);
 
@@ -66,17 +68,13 @@ export function OmokHeader(props) {
     };
 
     const onSelect = (value) => {
-        props.onStateChanged(value);
+        handleStatus(value);
         handleClose();
     }
 
-    const handleClick = event => {
-        setAnchorEl(event.currentTarget);
-    };
+    const handleClick = event => setAnchorEl(event.currentTarget);
 
-    const handleSearchInputChange = (evt) => {
-        props.onSearch(evt.target.value);
-    };
+    const handleSearchInputChange = (evt) => handleSearch(evt.target.value);
 
     return (
         <div className={classes.header}>

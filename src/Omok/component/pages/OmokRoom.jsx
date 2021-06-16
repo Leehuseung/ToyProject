@@ -1,12 +1,12 @@
 import {makeStyles} from '@material-ui/core/styles';
 import OmokChat from "../OmokChat";
-import {useGameRoom} from "../../js/hooks";
 import {appBarHeight} from "../../../common/components/constants";
 import OmokBoard from "../OmokBoard.jsx";
 import React from "react";
-import {GameContext} from '../../js/game';
 import {useHistory, useParams} from 'react-router-dom';
 import sweetAlert from "sweetalert";
+import useRoom from "../../js/hooks/useRoom";
+import {useLocation} from "react-router-dom"
 
 const useStyles = makeStyles({
     root: {
@@ -40,17 +40,25 @@ const useStyles = makeStyles({
     }
 });
 
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
+
 export default function OmokRoom() {
     const history = useHistory();
     const classes = useStyles();
     const {id} = useParams();
-    const {loading, error, room} = useGameRoom(id);
-    const {boardArr} = React.useContext(GameContext);
+    const query = useQuery();
+
+    const {loading, error, room} = useRoom(id, query.get('pwd'));
 
     if (loading) return <>Loading...</>
-    if (error) return <>Error...{error.toString()}</>
+    if (error) {
+        sweetAlert(`${error.toString()}`, '', 'warning').then(() => history.goBack());
+        return <></>;
+    }
 
-    if (room && room.isAvailable===1) {
+    if (room && room.isAvailable === 1) {
         return (
             <div className={classes.root}>
                 <OmokBoard id={id}/>
@@ -61,7 +69,7 @@ export default function OmokRoom() {
             </div>
         );
     } else {
-        sweetAlert('This Room is Not Available','','warning').then(() => history.goBack());
+        sweetAlert('This Room is Not Available', '', 'warning').then(() => history.goBack());
         return <>This room is currently not available!</>;
     }
 }

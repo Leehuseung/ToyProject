@@ -7,26 +7,18 @@ export const FETCH_ROOMS = gql`
         title
         isAvailable
         hasPassword
-        user {
-            id
-            name
-        }
       }
     }
 `;
 
 
 export const FETCH_ROOM = gql`
-    query FetchRoom($id : ID!){ 
-      room(id : $id) {
+    query FetchRoom($id : ID!, $password: String, $userId: String){ 
+      room(id : $id, password: $password, userId: $userId) {
         id
         title
         isAvailable
         hasPassword
-        user {
-            id
-            name
-        }
       }
     }
 `;
