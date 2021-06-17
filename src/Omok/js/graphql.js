@@ -40,3 +40,13 @@ export const DELETE_ROOM = gql`
       }
     }
 `;
+
+
+export const CREATE_USER = gql`
+    mutation CreateUser($id: ID!) { 
+       createUser(id: $id) {
+         id
+         name
+      } 
+    }
+`;

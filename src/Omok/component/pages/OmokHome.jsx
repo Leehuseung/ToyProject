@@ -24,7 +24,6 @@ export function OmokHome() {
     const user = useUser();
 
     if(user){
-        console.log('rendering with user')
         return (
             <UserContext.Provider value = {user}>
                 <OmokMain/>

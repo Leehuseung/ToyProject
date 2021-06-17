@@ -2,8 +2,7 @@ import {useMutation} from "@apollo/client";
 import {CREATE_ROOM, DELETE_ROOM} from "../graphql";
 
 
-
-export function useUpdate() {
+export function useUpdateRoom() {
     const updateRoom = (room) => {
         if (room.id) {
             return add({variables: room});
@@ -20,8 +19,6 @@ export function useUpdate() {
             console.log('error');
         },
     });
-
-
     return updateRoom;
 }
 

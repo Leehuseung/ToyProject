@@ -12,7 +12,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {fade} from "@material-ui/core/styles";
 import SearchIcon from "@material-ui/icons/Search";
 import InputBase from "@material-ui/core/InputBase";
-import {useUpdate} from "../js/hooks/useMutations";
+import {useUpdateRoom} from "../js/hooks/useMutations";
 import {useHistory} from "react-router-dom";
 import {UserContext} from "./pages/OmokHome";
 import {RoomListContext} from "./RoomListProvider";
@@ -128,7 +128,7 @@ function MakeRoomDialog(props) {
     const history = useHistory();
 
     const user = useContext(UserContext);
-    const addRoom = useUpdate();
+    const addRoom = useUpdateRoom();
     const [room, setRoom] = useState(Room(null, '', user.id, true, null));
     const handleTitleChange = (evt) => {
         setRoom(
