@@ -117,6 +117,7 @@ export function OmokHeader() {
                         input: classes.inputInput,
                     }}
                     inputProps={{'aria-label': 'search'}}
+                    fullWidth={true}
                     onChange={handleSearchInputChange}
                 />
             </div>
@@ -205,9 +206,7 @@ function MakeRoomDialog(props) {
                             addRoom({
                                 title: room.title,
                                 password: room.password,
-                                user: {id: user.id, name: user.id},
-                                isAvailable: 1,
-                                hasPassword: (room.password) ? 1 : 0,
+                                user: {id: user.id, name: user.name ?? ''},
                             }).then(res => {
                                 if (res.data) {
                                     props.toggle();

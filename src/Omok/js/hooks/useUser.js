@@ -21,7 +21,7 @@ export default function useUser() {
                 id: window.sessionStorage.getItem('sid') ?? ''
             }
         }).catch(error => console.log('GQL ERROR', error));
-    }, []);
+    }, [create]);
 
     return user;
 }

@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -18,6 +18,7 @@ import TextField from "@material-ui/core/TextField";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
 import {RoomListContext} from "./RoomListProvider";
+import {Lock} from "@material-ui/icons";
 
 
 const CurrentRoom = React.createContext(null);
@@ -28,7 +29,7 @@ export default function RoomListview(props) {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const history = useHistory();
     const [show, toggle] = useModal();
-    const {roomList, _, __, ___} = useContext(RoomListContext);
+    const {roomList} = useContext(RoomListContext);
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -52,6 +53,10 @@ export default function RoomListview(props) {
         }
     }
 
+    useEffect(() => {
+        setPage(0)
+    }, [roomList])
+
     return (
         <Paper>
             <TableContainer>
@@ -70,7 +75,9 @@ export default function RoomListview(props) {
                                 <TableRow key={room.id} onClick={() => handleRoomClick(room)}>
                                     <TableCell>{page * rowsPerPage + index}</TableCell>
                                     <TableCell>{(room.isAvailable) ? 'Waiting' : 'Playing'}</TableCell>
-                                    <TableCell align="left">{room.title}</TableCell>
+                                    <TableCell align="left">
+                                        <RoomTitle room={room}/>
+                                    </TableCell>
                                     <TableCell align="right">{(room.isAvailable) ? '1/2' : '2/2'}</TableCell>
                                 </TableRow>
                             )
@@ -87,7 +94,7 @@ export default function RoomListview(props) {
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-            <CurrentRoom.Provider value = {currentRoom}>
+            <CurrentRoom.Provider value={currentRoom}>
                 <PasswordDialog
                     open={show}
                     toggle={toggle}
@@ -148,3 +155,20 @@ function PasswordDialog(props) {
     );
 }
 
+const RoomTitle = (props) => {
+    if (props.room.hasPassword)
+        return (
+            <div>
+                <span style={{display: "inline-flex", alignItems: "center"}}>
+                    {props.room.title}
+                    <Lock/>
+                </span>
+            </div>
+        );
+    else
+        return (
+            <div>
+                {props.room.title}
+            </div>
+        );
+}
