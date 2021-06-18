@@ -35,7 +35,12 @@ io.on('connection', function (socket) {
 
     socket.on('putStone', (data) => {
         io.to(data.room).emit('getBoard', data);
-    });
+    })
+
+    socket.on('emitRoomUserInfo',(data) => {
+        io.to(data.room).emit('changeReady', data.changeRoomUserInfo);
+    })
+
 });
 
 server.listen(5000, function () {

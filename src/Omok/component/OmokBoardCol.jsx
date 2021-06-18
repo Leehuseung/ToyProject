@@ -9,10 +9,10 @@ const useStyles = makeStyles({
         width: '29px',
         height: '29px',
         display: 'inline-block',
-        cursor: 'pointer',
-        '&:hover': {
-            backgroundColor: '#FD7E14'
-        },
+        // cursor: 'pointer',
+        // '&:hover': {
+        //     backgroundColor: '#FD7E14'
+        // },
     },
     boardInnerCol_1: {
         width: '15px',
@@ -35,11 +35,13 @@ const useStyles = makeStyles({
 export default function OmokBoardCol(props){
     const classes = useStyles();
 
-    const { getTurnState, boardArr, userTurn } = React.useContext(GameContext);
+    const { getTurnState, boardArr, userTurn, isAllReady } = React.useContext(GameContext);
 
     let [stoneStyle,setStoneStyle] = useState({});
     let [topColStyle,setTopColStyle] = useState({});
     let [botColStyle,setBotColStyle] = useState({});
+    // let [gameStatusText, setGameStatusText] = getGameStatusText;
+    // let [roomUserInfo, setRoomUserInfo] = getRoomUserInfo;
 
     let [turn] = getTurnState;
 
@@ -59,34 +61,13 @@ export default function OmokBoardCol(props){
     let hideBottomBorder = () => { setBotColStyle({'borderLeft':'0px'}) }
     let hideRightBorder = () => { setBotColStyle({'borderTop':'0px'}) }
 
-    let borderInit = () => {
-        if(props.y === 16){
-            hideBottomBorder();
-        }
-        if(props.x === 0){
-            hideLeftBorder()
-        }
-        if(props.x === 16){
-            hideRightBorder();
-        }
-        if(props.y === 0){
-            hideTopBorder();
-        }
-        if(props.x === 0 && props.y === 0){
-            setTopColStyle({'borderRight':'0px','borderBottom':'0px'});
-        }
-        if(props.x === 16 && props.y === 16){
-            setBotColStyle({'borderTop':'0px','borderLeft':'0px'});
-        }
-    }
-
     let putStone = () => {
 
         if(turn !== userTurn){
             return;
-        }
-
-        if(props.status !== null){
+        }else if (!isAllReady){
+            return;
+        }else if (props.status !== null){
             sweetAlert("돌 위에 돌을 둘 수 없습니다.", "", "warning").then(() => {});
             return;
         }
@@ -101,6 +82,7 @@ export default function OmokBoardCol(props){
             x: props.x,
             y: props.y
         });
+
     }
 
     useEffect(() => {
@@ -117,37 +99,51 @@ export default function OmokBoardCol(props){
         } else {
             setTopColStyle({'opacity': 1});
             setBotColStyle({'opacity': 1});
-            borderInit();
+            if(props.y === 16){
+                hideBottomBorder();
+            }
+            if(props.x === 0){
+                hideLeftBorder()
+            }
+            if(props.x === 16){
+                hideRightBorder();
+            }
+            if(props.y === 0){
+                hideTopBorder();
+            }
+            if(props.x === 0 && props.y === 0){
+                setTopColStyle({'borderRight':'0px','borderBottom':'0px'});
+            }
+            if(props.x === 16 && props.y === 16){
+                setBotColStyle({'borderTop':'0px','borderLeft':'0px'});
+            }
         }
 
         setStoneStyle({
             'backgroundColor':color,
-            'border-radius': '50%',
+            'borderRadius': '50%',
             'boxShadow' : boxShadow,
         });
 
-    }, [boardArr]);
+    }, [boardArr,props.x,props.y]);
 
-    let mouseEnter = () => {
-        if(turn !== userTurn){
+    let changeBackground = (backgroundColor,cursor) => {
+        if(isAllReady && turn === userTurn){
             let changeStoneStyle =  Object.assign({}, stoneStyle);
-            changeStoneStyle.cursor = 'default';
-            if(props.status == null){
-                changeStoneStyle.backgroundColor = '#FFC078';
+            if(props.status === null){
+                changeStoneStyle.backgroundColor = backgroundColor;
+                changeStoneStyle.cursor = cursor;
             }
             setStoneStyle(changeStoneStyle);
         }
     }
 
+    let mouseEnter = () => {
+        changeBackground('#FD7E14','pointer');
+    }
+
     let mouseLeave = () => {
-        if(turn !== userTurn){
-            let changeStoneStyle =  Object.assign({}, stoneStyle);
-            changeStoneStyle.cursor = 'default';
-            if(props.status == null){
-                changeStoneStyle.backgroundColor = '#FFC078';
-            }
-            setStoneStyle(changeStoneStyle);
-        }
+        changeBackground('#FFC078','default');
     }
 
     return(

@@ -3,6 +3,7 @@ import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {appBarHeight} from "../../common/components/constants";
 import {GameContext} from "../js/game";
+import OmokRoomInfo from "./OmokRoomInfo";
 
 const useStyles = makeStyles({
     rooms: {
@@ -22,7 +23,7 @@ const useStyles = makeStyles({
         margin: '0 auto'
     },
     omokTop: {
-        height: '100px'
+        marginBottom: '15px'
     },
     boardRow: {
         height: '29px'
@@ -35,11 +36,13 @@ export default function OmokBoard(props){
 
     return (
         <div className={classes.rooms}>
-            <div className={classes.omokTop}> </div>
+            <div className={classes.omokTop}>
+                <OmokRoomInfo userId={props.userId} id={props.id}/>
+            </div>
             <div className={classes.omokBoard}>
                 {
                     boardArr.map(
-                        row => <OmokBoardRow row={row} id={props.id}/>
+                        row => <OmokBoardRow key={row[0].axisY} row={row} id={props.id}/>
                     )
                 }
             </div>

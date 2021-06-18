@@ -15,7 +15,7 @@ export default function OmokBoardRow (props){
         <div className={classes.boardRow}>
             {
                 props.row.map(
-                    row => <OmokBoardCol style={{}} x={row.axisX} y={row.axisY}  status={row.status} id={props.id}/>
+                    row => <OmokBoardCol key={row.axisX} x={row.axisX} y={row.axisY}  status={row.status} id={props.id}/>
                 )
             }
         </div>

@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function OmokHeader() {
     const classes = useStyles();
-    const {roomList, setRoomList, handleStatus, handleSearch} = useContext(RoomListContext);
+    const {handleStatus, handleSearch} = useContext(RoomListContext);
     const [show, toggle] = useModal();
     const [anchorEl, setAnchorEl] = useState(null);
 
