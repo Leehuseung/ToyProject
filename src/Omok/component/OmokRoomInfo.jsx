@@ -3,6 +3,7 @@ import React, {useEffect} from "react";
 import Button from '@material-ui/core/Button';
 import {GameContext} from '../js/game';
 import {socket} from "../js/socket";
+import {useParams} from "react-router-dom";
 
 const useStyles = makeStyles({
     roomWrapper: {
@@ -31,61 +32,82 @@ const useStyles = makeStyles({
     }
 });
 
-export default function OmokRoomInfo(props){
-    const { getRoomUserInfo,  setIsAllReady, getUserRole, getGameStatusText } = React.useContext(GameContext);
+export default function OmokRoomInfo(){
+    const { getRoomUserInfo, isAllReady ,setIsAllReady, getUserRole, getGameStatusText } = React.useContext(GameContext);
     const classes = useStyles();
+    const {id} = useParams();
 
     let [roomUserInfo,setRoomUserInfo] = getRoomUserInfo;
     let [userRole] = getUserRole;
     let [gameStatusText, setGameStatusText] = getGameStatusText;
 
+    const myStateRef = React.useRef(userRole);
+    myStateRef.current = userRole;
+
+    const hostIsReady = React.useRef(userRole);
+    hostIsReady.current = roomUserInfo.host.isReady;
+
+    const guestIsReady = React.useRef(userRole);
+    guestIsReady.current = roomUserInfo.guest.isReady;
 
 
     useEffect(() => {
         socket.on('changeReady',(data) => {
             setRoomUserInfo(data);
         });
-    },[setRoomUserInfo]);
+        return () => {
+            socket.emit('gameLeave',{
+                role : myStateRef.current,
+                room : id
+            })
+        }
+    },[id,setRoomUserInfo]);
 
     useEffect(() => {
-        if(roomUserInfo.host.isReady && roomUserInfo.guest.isReady){
+
+        if(hostIsReady.current && guestIsReady.current){
             let time = 5;
             setGameStatusText('게임을 시작합니다..'+ time + '초');
+
             let timerId = setInterval(() => {
-                setGameStatusText('게임을 시작합니다..'+ (--time)+ '초');
-            },1000);
+                if(hostIsReady.current && guestIsReady.current){
+                    setGameStatusText('게임을 시작합니다..'+ (--time)+ '초');
 
-            setTimeout(() => {
-                clearInterval(timerId);
-                setIsAllReady(true);
+                    if(time === 0){
+                        clearInterval(timerId);
+                        setIsAllReady(true);
+                        if(roomUserInfo.host.stone === 'B'){
+                            setGameStatusText(`${roomUserInfo.host.name}의 차례입니다.`);
+                        } else {
+                            setGameStatusText(`${roomUserInfo.guest.name}의 차례입니다.`);
+                        }
+                    }
 
-                if(roomUserInfo.host.stone === 'B'){
-                    setGameStatusText(`${roomUserInfo.host.userId}의 차례입니다.`);
                 } else {
-                    setGameStatusText(`${roomUserInfo.guest.userId}의 차례입니다.`);
+                    setGameStatusText('준비');
+                    clearInterval(timerId);
                 }
 
-
-            }, 5000);
-
+            },1000)
         }
     },[roomUserInfo,setGameStatusText,setIsAllReady]);
 
     let readyEvent = (role) => {
         return () => {
+            if(isAllReady){
+                return;
+            }
+
             if(role === userRole){
                 let changeRoomUserInfo =  Object.assign({}, roomUserInfo);
+                changeRoomUserInfo[role].isReady = !changeRoomUserInfo[role].isReady;
 
-                if(changeRoomUserInfo[role].isReady){
-                    changeRoomUserInfo[role].isReady = false;
-                } else {
-                    changeRoomUserInfo[role].isReady = true;
-                }
-
-                socket.emit('emitRoomUserInfo', {
-                    room : props.id,
-                    changeRoomUserInfo : changeRoomUserInfo
+                socket.emit('shareUserStatus',{
+                    'room' : id,
+                    'role' : role,
+                    'roomUserInfo' : changeRoomUserInfo[role]
                 });
+
             }
         };
     }
@@ -94,8 +116,10 @@ export default function OmokRoomInfo(props){
     return(
         <>
             <div className={classes.roomWrapper}>
-                <div className="host" style={{'textAlign':'center'}}>
-                    {roomUserInfo.host.userId + '(방장)'}
+                <div className="host"
+                     style={{'textAlign':'center', 'display' : roomUserInfo.host.name === '' ? 'none' : ''}}
+                >
+                    {roomUserInfo.host.name + '(방장)'}
                     <Button style={{marginLeft:'20px'}}
                             variant="contained"
                             color = {roomUserInfo.host.isReady ? 'primary' : 'default'}
@@ -104,8 +128,10 @@ export default function OmokRoomInfo(props){
                         준비
                     </Button>
                 </div>
-                <div className="guest" style={{'textAlign':'center'}}>
-                    {roomUserInfo.guest.userId}
+                <div className="guest"
+                     style={{'textAlign':'center', 'display' : roomUserInfo.guest.name === '' ? 'none' : ''}}
+                >
+                    {roomUserInfo.guest.name}
                     <Button style={{marginLeft:'20px'}}
                             variant="contained"
                             color = {roomUserInfo.guest.isReady ? 'primary' : 'default'}

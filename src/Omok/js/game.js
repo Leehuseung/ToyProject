@@ -1,33 +1,35 @@
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import sweetAlert from "sweetalert";
 import {socket} from "./socket";
-
+import {UserContext} from "../component/pages/OmokHome";
+import {useParams} from "react-router-dom";
 
 export const GameContext = React.createContext(null)
 
 //ReactContext를 사용해서 사용자의 턴 flag 게임내 전역으로 관리
 export function GameProvider ({ children }) {
 
+    const user = useContext(UserContext);
+    const {id} = useParams();
+
     let [turn,setTurn] = useState('B');
     let [userTurn,setUserTurn] = useState('B');
     let [userRole,setUserRole] = useState('host');
     let [isAllReady, setIsAllReady] = useState(false);
     let [gameStatusText, setGameStatusText] = useState('준비');
-
     let [roomUserInfo,setRoomUserInfo] = useState({
         //초기값
         'host' : {
-            userId : 'user1',
+            name : '',
             stone : 'B',
             isReady : false
         },
         'guest' : {
-            userId : 'user2',
+            name : '',
             stone : 'W',
             isReady : false
         },
     });
-
 
     let [x,setX] = useState(0);
     let [y,setY] = useState(0);
@@ -58,9 +60,9 @@ export function GameProvider ({ children }) {
         setY(data.y);
 
         if(data.turn === 'W'){
-            setGameStatusText(`${roomUserInfo.host.userId}의 차례입니다.`);
+            setGameStatusText(`${roomUserInfo.host.name}의 차례입니다.`);
         } else {
-            setGameStatusText(`${roomUserInfo.guest.userId}의 차례입니다.`);
+            setGameStatusText(`${roomUserInfo.guest.name}의 차례입니다.`);
         }
 
         //소켓에서 넘어온 Board 변경
@@ -71,13 +73,36 @@ export function GameProvider ({ children }) {
         setTurn(data.turn === 'B' ? 'W' : 'B');
     });
 
-    socket.on('setTurn', (data) => {
-        //두번째 입장 guest
-        if(data === 2){
-            setUserTurn('W');
-            setUserRole('guest');
-        }
-    });
+
+    useEffect(() => {
+        socket.on('receiveUserStatus',(data) => {
+            let changeRoomUserInfo =  Object.assign({}, roomUserInfo);
+            changeRoomUserInfo[data.role] = data.roomUserInfo;
+            setRoomUserInfo(changeRoomUserInfo);
+        });
+
+        socket.on('enterGame',(data) => {
+            let role = 'host';
+            if(data === 2){
+                role = 'guest';
+                setUserTurn('W');
+                setUserRole(role);
+            }
+            // changeUser(role,'name',user.name);
+
+            let changeRoomUserInfo =  Object.assign({}, roomUserInfo);
+
+            changeRoomUserInfo[role]['name'] = user.name;
+            // setRoomUserInfo(changeRoomUserInfo);
+            socket.emit('shareUserStatus',{
+                'room' : id,
+                'role' : role,
+                'roomUserInfo' : changeRoomUserInfo[role]
+            });
+
+        });
+
+    },[user,roomUserInfo,id]);
 
     useEffect(() => {
 
@@ -103,6 +128,10 @@ export function GameProvider ({ children }) {
             changeRoomUserInfo.guest.isReady = false;
 
             setRoomUserInfo(changeRoomUserInfo);
+            socket.emit('emitRoomUserInfo',{
+                room : id,
+                roomUserInfo : changeRoomUserInfo
+            })
         }
 
         const isWinner = (y,x) => {
@@ -213,7 +242,7 @@ export function GameProvider ({ children }) {
         }
 
         isWinner(y,x);
-    },[boardArr,x,y,turn,userRole,roomUserInfo]);
+    },[boardArr,x,y,turn,userRole,roomUserInfo,id]);
 
     const store = {
         getTurnState: [turn, setTurn],
