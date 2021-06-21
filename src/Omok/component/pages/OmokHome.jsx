@@ -1,7 +1,7 @@
-import React from "react";
+import React, {useContext} from "react";
 import OmokMain from "./OmokMain";
 import {Button, makeStyles} from "@material-ui/core";
-import useUser from "../../js/hooks/useUser";
+import {AuthContext} from "../../../common/AuthProvider";
 
 export const UserContext = React.createContext(null);
 
@@ -21,7 +21,8 @@ const useStyles = makeStyles((theme) => ({
 
 export function OmokHome() {
     const classes = useStyles();
-    const user = useUser();
+    const user = useContext(AuthContext).user;
+    const guestLogin = useContext(AuthContext).signInAsGuest;
 
     if(user){
         return (
@@ -37,9 +38,9 @@ export function OmokHome() {
                     className={classes.button}
                     variant="contained"
                     color="inherit"
-                    onClick={()=>window.location.reload()}
+                    onClick={()=>guestLogin()}
                 >
-                    Try Again
+                    Enter As Guest
                 </Button>
             </div>
         );

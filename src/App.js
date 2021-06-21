@@ -12,7 +12,7 @@ import {Menu} from "@material-ui/icons";
 import {routes} from "./common/routes";
 import {drawerWidth, appBarHeight} from "./common/components/constants";
 import {AppDrawer} from "./common/components/AppDrawer";
-import KakaoLoginButton from "./common/components/KakaoLoginButton";
+import AuthButton from "./common/components/AuthButton";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -86,7 +86,7 @@ export default function App() {
                     <Typography variant="h6" className={classes.title}>
                         Toy Project
                     </Typography>
-                    <KakaoLoginButton/>
+                    <AuthButton/>
                 </Toolbar>
             </AppBar>
             <BrowserRouter>

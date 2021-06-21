@@ -43,8 +43,8 @@ export const DELETE_ROOM = gql`
 
 
 export const CREATE_USER = gql`
-    mutation CreateUser($id: ID!) { 
-       createUser(id: $id) {
+    mutation CreateUser($token: ID, $sid: ID) { 
+       createUser(token: $token, sid: $sid) {
          id
          name
       } 
