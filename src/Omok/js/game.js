@@ -1,15 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react'
 import sweetAlert from "sweetalert";
 import {socket} from "./socket";
-import {UserContext} from "../component/pages/OmokHome";
 import {useParams} from "react-router-dom";
+import {AuthContext} from "../../common/AuthProvider";
 
 export const GameContext = React.createContext(null)
 
 //ReactContext를 사용해서 사용자의 턴 flag 게임내 전역으로 관리
 export function GameProvider ({ children }) {
 
-    const user = useContext(UserContext);
+    const user = useContext(AuthContext).user;
     const {id} = useParams();
 
     let [turn,setTurn] = useState('B');

@@ -13,8 +13,8 @@ export const FETCH_ROOMS = gql`
 
 
 export const FETCH_ROOM = gql`
-    query FetchRoom($id : ID!, $password: String, $userId: String){ 
-      room(id : $id, password: $password, userId: $userId) {
+    query FetchRoom($id : ID!, $password: String){ 
+      room(id : $id, password: $password) {
         id
         title
         isAvailable
@@ -25,8 +25,8 @@ export const FETCH_ROOM = gql`
 
 
 export const CREATE_ROOM = gql`
-    mutation CreateRoom($title: String!, $password: String, $user: UserInput) { 
-       createRoom(title: $title, password: $password, user: $user) {
+    mutation CreateRoom($title: String!, $password: String) { 
+       createRoom(title: $title, password: $password) {
         id
       } 
     }
@@ -38,15 +38,5 @@ export const DELETE_ROOM = gql`
       deleteRoom (id: $id) {
         id
       }
-    }
-`;
-
-
-export const CREATE_USER = gql`
-    mutation CreateUser($token: ID, $sid: ID) { 
-       createUser(token: $token, sid: $sid) {
-         id
-         name
-      } 
     }
 `;

@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from "react";
 import {socket} from "../socket";
-import {UserContext} from "../../component/pages/OmokHome";
+import {AuthContext} from "../../../common/AuthProvider";
 
 
 export default function useChatting(roomId) {
@@ -14,7 +14,7 @@ export default function useChatting(roomId) {
         }
     };
 
-    const user = useContext(UserContext);
+    const user = useContext(AuthContext).user;
     const [log, addLog] = useState('');
 
     useEffect(() => {
