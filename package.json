@@ -2,6 +2,7 @@
   "name": "toyproject",
   "version": "0.1.0",
   "private": true,
+  "proxy" : "http://127.0.0.1:8000",
   "dependencies": {
     "@apollo/client": "^3.3.19",
     "@material-ui/core": "^4.11.4",

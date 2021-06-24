@@ -41,7 +41,7 @@ export default function OmokMain() {
     const {loading, error, data} = useQuery(FETCH_ROOMS);
 
     if (loading) return "Loading";
-    if (error) return "Error";
+    if (error) return `Error : ${error.message}`;
 
     return (
         <>
