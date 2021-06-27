@@ -10,10 +10,10 @@ export function useModal () {
     return [showModal, toggleModal];
 }
 
-export function useSignIn(token) {
+export function useSignIn(accessToken) {
     const authContext = useContext(AuthContext)
     const {loading, error, data} = useQuery(SIGN_IN, {
-        variables : {token : token},
+        variables : {accessToken : accessToken},
         onCompleted : (data) => {
             authContext.loginComplete(data.user);
         },
