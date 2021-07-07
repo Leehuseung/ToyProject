@@ -1,9 +1,12 @@
 import {makeStyles} from "@material-ui/core/styles";
-import React, {useEffect} from "react";
-import Button from '@material-ui/core/Button';
+import React, {useEffect,useContext} from "react";
 import {GameContext} from '../js/game';
 import {socket} from "../js/socket";
 import {useParams} from "react-router-dom";
+import {AuthContext} from "../../common/AuthProvider";
+
+
+import OmokRoomUserStatus from "./OmokRoomUserStatus";
 
 const useStyles = makeStyles({
     roomWrapper: {
@@ -33,113 +36,26 @@ const useStyles = makeStyles({
 });
 
 export default function OmokRoomInfo(){
-    const { getRoomUserInfo, isAllReady ,setIsAllReady, getUserRole, getGameStatusText } = React.useContext(GameContext);
+    const { roomUserInfo, gameStatusText } = React.useContext(GameContext);
     const classes = useStyles();
+    const user = useContext(AuthContext).user;
     const {id} = useParams();
 
-    let [roomUserInfo,setRoomUserInfo] = getRoomUserInfo;
-    let [userRole] = getUserRole;
-    let [gameStatusText, setGameStatusText] = getGameStatusText;
-
-    const myStateRef = React.useRef(userRole);
-    myStateRef.current = userRole;
-
-    const hostIsReady = React.useRef(userRole);
-    hostIsReady.current = roomUserInfo.host.isReady;
-
-    const guestIsReady = React.useRef(userRole);
-    guestIsReady.current = roomUserInfo.guest.isReady;
-
-
     useEffect(() => {
-        socket.on('changeReady',(data) => {
-            setRoomUserInfo(data);
-        });
+
         return () => {
             socket.emit('gameLeave',{
-                role : myStateRef.current,
-                room : id
+                room : id,
+                name : user.name
             })
         }
-    },[id,setRoomUserInfo]);
-
-    useEffect(() => {
-
-        if(hostIsReady.current && guestIsReady.current){
-            let time = 5;
-            setGameStatusText('게임을 시작합니다..'+ time + '초');
-
-            let timerId = setInterval(() => {
-                if(hostIsReady.current && guestIsReady.current){
-                    setGameStatusText('게임을 시작합니다..'+ (--time)+ '초');
-
-                    if(time === 0){
-                        clearInterval(timerId);
-                        setIsAllReady(true);
-                        if(roomUserInfo.host.stone === 'B'){
-                            setGameStatusText(`${roomUserInfo.host.name}의 차례입니다.`);
-                        } else {
-                            setGameStatusText(`${roomUserInfo.guest.name}의 차례입니다.`);
-                        }
-                    }
-
-                } else {
-                    setGameStatusText('준비');
-                    clearInterval(timerId);
-                }
-
-            },1000)
-        }
-    },[roomUserInfo,setGameStatusText,setIsAllReady]);
-
-    let readyEvent = (role) => {
-        return () => {
-            if(isAllReady){
-                return;
-            }
-
-            if(role === userRole){
-                let changeRoomUserInfo =  Object.assign({}, roomUserInfo);
-                changeRoomUserInfo[role].isReady = !changeRoomUserInfo[role].isReady;
-
-                socket.emit('shareUserStatus',{
-                    'room' : id,
-                    'role' : role,
-                    'roomUserInfo' : changeRoomUserInfo[role]
-                });
-
-            }
-        };
-    }
-
+    },[id,user.name]);
 
     return(
         <>
             <div className={classes.roomWrapper}>
-                <div className="host"
-                     style={{'textAlign':'center', 'display' : roomUserInfo.host.name === '' ? 'none' : ''}}
-                >
-                    {roomUserInfo.host.name + '(방장)'}
-                    <Button style={{marginLeft:'20px'}}
-                            variant="contained"
-                            color = {roomUserInfo.host.isReady ? 'primary' : 'default'}
-                            onClick={readyEvent('host')}
-                    >
-                        준비
-                    </Button>
-                </div>
-                <div className="guest"
-                     style={{'textAlign':'center', 'display' : roomUserInfo.guest.name === '' ? 'none' : ''}}
-                >
-                    {roomUserInfo.guest.name}
-                    <Button style={{marginLeft:'20px'}}
-                            variant="contained"
-                            color = {roomUserInfo.guest.isReady ? 'primary' : 'default'}
-                            onClick={readyEvent('guest')}
-                    >
-                        준비
-                    </Button>
-                </div>
+                <OmokRoomUserStatus roomUserInfo={typeof roomUserInfo.host === 'undefined' ? {} : roomUserInfo.host} role={'host'}/>
+                <OmokRoomUserStatus roomUserInfo={typeof roomUserInfo.guest === 'undefined' ? {} : roomUserInfo.guest} role={'guest'}/>
             </div>
             <div className={classes.gamePlayingTextbox}>
                 {gameStatusText}

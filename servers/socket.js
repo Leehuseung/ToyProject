@@ -27,57 +27,96 @@ io.on('connection', function (socket) {
 
         io.to(data.room).emit('announce', `${data.name} entered the chat room`);
 
-        if(!gameRoomMap.has(data.room)){
-            gameRoomMap.set(socket.id , {
-                room : data.room,
-                role : ''
-            });
-            gameRoomMap.set(data.room,{
-                'roomUserInfo':{
-                    'host' : {
-                        name : '',
-                        stone : 'B',
-                        isReady : false
-                    },
-                    'guest' : {
-                        name : '',
-                        stone : 'W',
-                        isReady : false
-                    },
+        if(data.room !== 'lobby'){
+            if(!gameRoomMap.has(data.room)){
+                console.log('create game room map');
+                let roomInfo = {
+                    roomUserInfo : {}
                 }
-            });
+
+                roomInfo.roomUserInfo.host = {
+                    name : data.name,
+                    // stone : 'B',
+                    isReady : false
+                };
+
+                gameRoomMap.set(data.room, roomInfo);
+            } else {
+                gameRoomMap.get(data.room).roomUserInfo.guest = {
+                    name : data.name,
+                    // stone : 'W',
+                    isReady : false
+                }
+            }
+            io.to(data.room).emit('enterGame', gameRoomMap.get(data.room).roomUserInfo);
         }
-        socket.emit('enterGame', io.sockets.adapter.rooms.get(data.room).size);
     });
 
     socket.on('leave', (data) => {
-        console.log('leaving', data);
+        // console.log('leaving', data);
         socket.leave(data.room);
         io.to(data.room).emit('announce', `${data.name} leaved the chat room`);
     });
 
     socket.on('gameLeave' , (data) => {
         let roomUserInfo = gameRoomMap.get(data.room).roomUserInfo;
-        roomUserInfo[data.role].name = '';
-        roomUserInfo[data.role].ready = false;
-        io.to(data.room).emit('changeReady', roomUserInfo);
+
+        // console.log('``삭제전``');
+        // console.log(roomUserInfo);
+        // console.log('````');
+
+        if(data.name === roomUserInfo.host.name){
+            delete roomUserInfo.host;
+            roomUserInfo.host = roomUserInfo.guest;
+            delete roomUserInfo.guest;
+        } else if (data.name === roomUserInfo.guest.name){
+            delete roomUserInfo.guest;
+        }
+        roomUserInfo.host.isReady = false;
+
+        if(typeof roomUserInfo.host === 'undefined' && typeof roomUserInfo.guest === 'undefined' ){
+            gameRoomMap.delete(data.room);
+        }
+
+        io.to(data.room).emit('changeRoomInfo', roomUserInfo);
+        io.to(data.room).emit('boardInit', {});
+        io.to(data.room).emit('initOmokUserInfo', roomUserInfo);
     });
 
     socket.on('putStone', (data) => {
         io.to(data.room).emit('getBoard', data);
-    })
-
-    socket.on('emitRoomUserInfo',(data) => {
-        gameRoomMap.get(data.room).roomUserInfo = data.roomUserInfo;
+        io.to(data.room).emit('setGameText', data);
     })
 
     socket.on('shareUserStatus',(data) => {
-        let room = data.room;
-        let roomUserInfo = gameRoomMap.get(room).roomUserInfo;
+        let roomUserInfo = gameRoomMap.get(data.room).roomUserInfo;
 
-        roomUserInfo[data.role] = data.roomUserInfo;
-        io.to(room).emit('changeReady', roomUserInfo);
+        roomUserInfo[data.role].isReady = data.isReady;
+
+        io.to(data.room).emit('changeRoomInfo', roomUserInfo);
     })
+
+    socket.on('allReady', (data) => {
+        const num = Math.floor(Math.random() * 10);
+        let role = num > 4 ? 'host' : 'guest';
+
+        io.to(data.room).emit('gameStart', {
+            'role' : role
+        });
+
+        io.to(data.room).emit('gameBoardStart', {
+            'role' : role
+        });
+    })
+
+    socket.on('endGame',(data) => {
+        let roomUserInfo = gameRoomMap.get(data.room).roomUserInfo;
+        roomUserInfo.host.isReady = false;
+        roomUserInfo.guest.isReady = false;
+        io.to(data.room).emit('boardInit', {});
+        io.to(data.room).emit('initOmokUserInfo', roomUserInfo);
+    })
+
 
 });
 

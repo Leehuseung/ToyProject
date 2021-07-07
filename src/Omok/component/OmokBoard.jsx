@@ -37,7 +37,7 @@ export default function OmokBoard(props){
     return (
         <div className={classes.rooms}>
             <div className={classes.omokTop}>
-                <OmokRoomInfo userId={props.userId} id={props.id}/>
+                <OmokRoomInfo/>
             </div>
             <div className={classes.omokBoard}>
                 {

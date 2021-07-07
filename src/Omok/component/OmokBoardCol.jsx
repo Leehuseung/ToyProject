@@ -1,8 +1,9 @@
 import {makeStyles} from "@material-ui/core/styles";
-import React,{useState,useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import {GameContext} from '../js/game';
 import sweetAlert from 'sweetalert';
 import {socket} from "../js/socket";
+import {useParams} from "react-router-dom";
 
 const useStyles = makeStyles({
     boardCol: {
@@ -34,16 +35,13 @@ const useStyles = makeStyles({
 
 export default function OmokBoardCol(props){
     const classes = useStyles();
-
-    const { getTurnState, boardArr, userTurn, isAllReady } = React.useContext(GameContext);
+    const { turn, boardArr, userTurn, isAllReady, getOtherUserName } = React.useContext(GameContext);
 
     let [stoneStyle,setStoneStyle] = useState({});
     let [topColStyle,setTopColStyle] = useState({});
     let [botColStyle,setBotColStyle] = useState({});
-    // let [gameStatusText, setGameStatusText] = getGameStatusText;
-    // let [roomUserInfo, setRoomUserInfo] = getRoomUserInfo;
 
-    let [turn] = getTurnState;
+    const {id} = useParams();
 
     let hideStoneBackground = (status) => {
         if(status == null){
@@ -62,7 +60,6 @@ export default function OmokBoardCol(props){
     let hideRightBorder = () => { setBotColStyle({'borderTop':'0px'}) }
 
     let putStone = () => {
-
         if(turn !== userTurn){
             return;
         }else if (!isAllReady){
@@ -76,25 +73,25 @@ export default function OmokBoardCol(props){
         changeBoardArr[props.y][props.x].status = turn === 'B' ? 'B' : 'W';
 
         socket.emit('putStone', {
-            room: props.id,
+            room: id,
             turn: turn,
             boardArr: changeBoardArr,
             x: props.x,
-            y: props.y
+            y: props.y,
+            name: getOtherUserName()
         });
-
     }
 
     useEffect(() => {
         let color = '';
-        let boxShadow = '';
+        // let boxShadow = '';
         if(boardArr[props.y][props.x].status === 'W'){
             color = 'white';
-            boxShadow = '2px 2px 2px grey';
+            // boxShadow = '2px 2px 2px grey';
             hideStoneBackground(boardArr[props.y][props.x].status);
         }else if (boardArr[props.y][props.x].status === 'B'){
             color = 'black';
-            boxShadow = '2px 2px 2px grey';
+            // boxShadow = '2px 2px 2px grey';
             hideStoneBackground(boardArr[props.y][props.x].status);
         } else {
             setTopColStyle({'opacity': 1});
@@ -122,7 +119,7 @@ export default function OmokBoardCol(props){
         setStoneStyle({
             'backgroundColor':color,
             'borderRadius': '50%',
-            'boxShadow' : boxShadow,
+            // 'boxShadow' : boxShadow,
         });
 
     }, [boardArr,props.x,props.y]);
