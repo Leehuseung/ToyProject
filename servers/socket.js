@@ -59,28 +59,32 @@ io.on('connection', function (socket) {
     });
 
     socket.on('gameLeave' , (data) => {
-        let roomUserInfo = gameRoomMap.get(data.room).roomUserInfo;
+        if(gameRoomMap.has(data.room)){
+            let roomUserInfo = gameRoomMap.get(data.room).roomUserInfo;
 
-        // console.log('``삭제전``');
-        // console.log(roomUserInfo);
-        // console.log('````');
+            // console.log('``삭제전``');
+            // console.log(roomUserInfo);
+            // console.log('````');
 
-        if(data.name === roomUserInfo.host.name){
-            delete roomUserInfo.host;
-            roomUserInfo.host = roomUserInfo.guest;
-            delete roomUserInfo.guest;
-        } else if (data.name === roomUserInfo.guest.name){
-            delete roomUserInfo.guest;
+            if(data.name === roomUserInfo.host.name){
+                delete roomUserInfo.host;
+                roomUserInfo.host = roomUserInfo.guest;
+                roomUserInfo.host.isReady = false;
+                delete roomUserInfo.guest;
+            } else if (data.name === roomUserInfo.guest.name){
+                roomUserInfo.host.isReady = false;
+                delete roomUserInfo.guest;
+            }
+
+
+            if(typeof roomUserInfo.host === 'undefined' && typeof roomUserInfo.guest === 'undefined' ){
+                gameRoomMap.delete(data.room);
+            }
+
+            io.to(data.room).emit('changeRoomInfo', roomUserInfo);
+            io.to(data.room).emit('boardInit', {});
+            io.to(data.room).emit('initOmokUserInfo', roomUserInfo);
         }
-        roomUserInfo.host.isReady = false;
-
-        if(typeof roomUserInfo.host === 'undefined' && typeof roomUserInfo.guest === 'undefined' ){
-            gameRoomMap.delete(data.room);
-        }
-
-        io.to(data.room).emit('changeRoomInfo', roomUserInfo);
-        io.to(data.room).emit('boardInit', {});
-        io.to(data.room).emit('initOmokUserInfo', roomUserInfo);
     });
 
     socket.on('putStone', (data) => {
