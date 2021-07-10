@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button';
 import React from "react";
-import {socket} from "../js/socket";
-import {GameContext} from "../js/game";
+import {socket} from "../../js/socket";
+import {GameContext} from "../../js/game";
 import {useParams} from "react-router-dom";
 
 export default function OmokRoomUserStatus(props){

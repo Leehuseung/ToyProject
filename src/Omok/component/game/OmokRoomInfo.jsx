@@ -1,9 +1,9 @@
 import {makeStyles} from "@material-ui/core/styles";
 import React, {useEffect,useContext} from "react";
-import {GameContext} from '../js/game';
-import {socket} from "../js/socket";
+import {GameContext} from '../../js/game';
+import {socket} from "../../js/socket";
 import {useParams} from "react-router-dom";
-import {AuthContext} from "../../common/AuthProvider";
+import {AuthContext} from "../../../common/AuthProvider";
 
 
 import OmokRoomUserStatus from "./OmokRoomUserStatus";

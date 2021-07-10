@@ -1,7 +1,7 @@
 import {makeStyles} from '@material-ui/core/styles';
 import OmokChat from "../OmokChat";
 import {appBarHeight} from "../../../common/components/constants";
-import OmokBoard from "../OmokBoard.jsx";
+import OmokBoard from "../game/OmokBoard.jsx";
 import React from "react";
 import {useHistory, useParams} from 'react-router-dom';
 import sweetAlert from "sweetalert";

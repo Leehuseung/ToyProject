@@ -1,11 +1,35 @@
+import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import React, {useState, useEffect} from "react";
-import {GameContext} from '../js/game';
-import sweetAlert from 'sweetalert';
-import {socket} from "../js/socket";
+import {appBarHeight} from "../../../common/components/constants";
+import {GameContext} from "../../js/game";
+import OmokRoomInfo from "./OmokRoomInfo";
 import {useParams} from "react-router-dom";
+import sweetAlert from "sweetalert";
+import {socket} from "../../js/socket";
 
 const useStyles = makeStyles({
+    rooms: {
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        minWidth: '500px',
+        minHeight: '820px',
+        overflow: "auto",
+        maxHeight: `calc(100vh - ${appBarHeight}px)`
+    },
+    omokBoard: {
+        backgroundColor: '#FFC078',
+        width: '495px',
+        height: '495px',
+        border: '1px solid black',
+        margin: '0 auto'
+    },
+    omokTop: {
+        marginBottom: '15px'
+    },
+    boardRow: {
+        height: '29px'
+    },
     boardCol: {
         width: '29px',
         height: '29px',
@@ -33,7 +57,41 @@ const useStyles = makeStyles({
     }
 });
 
-export default function OmokBoardCol(props){
+export default function OmokBoard(props){
+    const classes = useStyles();
+    const { boardArr } = React.useContext(GameContext);
+
+    return (
+        <div className={classes.rooms}>
+            <div className={classes.omokTop}>
+                <OmokRoomInfo/>
+            </div>
+            <div className={classes.omokBoard}>
+                {
+                    boardArr.map(
+                        row => <OmokBoardRow key={row[0].axisY} row={row} id={props.id}/>
+                    )
+                }
+            </div>
+        </div>
+    );
+}
+
+function OmokBoardRow (props){
+    const classes = useStyles();
+
+    return(
+        <div className={classes.boardRow}>
+            {
+                props.row.map(
+                    row => <OmokBoardCol key={row.axisX} x={row.axisX} y={row.axisY}  status={row.status} id={props.id}/>
+                )
+            }
+        </div>
+    );
+}
+
+function OmokBoardCol(props){
     const classes = useStyles();
     const { turn, boardArr, userTurn, isAllReady, getOtherUserName } = React.useContext(GameContext);
 
