@@ -17,7 +17,8 @@ export default function UserOmokGameInfo() {
             colArr.push({
                 'axisX': j,
                 'axisY': i,
-                'status':null
+                'status':null,
+                'isNew': false
             });
         }
         arr.push(colArr);
@@ -163,6 +164,7 @@ export default function UserOmokGameInfo() {
             for (let i = 0; i < changeBoardArr.length; i++) {
                 for (let j = 0; j < changeBoardArr[i].length; j++) {
                     changeBoardArr[i][j].status = null;
+                    changeBoardArr[i][j].isNew = false;
                 }
             }
             setBoardArr(changeBoardArr);

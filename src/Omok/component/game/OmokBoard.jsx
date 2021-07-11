@@ -129,6 +129,7 @@ function OmokBoardCol(props){
 
         let changeBoardArr = [...boardArr];
         changeBoardArr[props.y][props.x].status = turn === 'B' ? 'B' : 'W';
+        changeBoardArr[props.y][props.x].isNew = true;
 
         socket.emit('putStone', {
             room: id,
@@ -142,14 +143,11 @@ function OmokBoardCol(props){
 
     useEffect(() => {
         let color = '';
-        // let boxShadow = '';
         if(boardArr[props.y][props.x].status === 'W'){
             color = 'white';
-            // boxShadow = '2px 2px 2px grey';
             hideStoneBackground(boardArr[props.y][props.x].status);
         }else if (boardArr[props.y][props.x].status === 'B'){
             color = 'black';
-            // boxShadow = '2px 2px 2px grey';
             hideStoneBackground(boardArr[props.y][props.x].status);
         } else {
             setTopColStyle({'opacity': 1});
@@ -174,10 +172,15 @@ function OmokBoardCol(props){
             }
         }
 
+        let borderStyle = '';
+        if(boardArr[props.y][props.x].isNew === true){
+            borderStyle = '3px solid red';
+        }
+
         setStoneStyle({
             'backgroundColor':color,
             'borderRadius': '50%',
-            // 'boxShadow' : boxShadow,
+            'border' : borderStyle
         });
 
     }, [boardArr,props.x,props.y]);
