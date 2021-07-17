@@ -49,7 +49,7 @@ io.on('connection', function (socket) {
                     }
                 }
             }
-            io.to(data.room).emit('enterGame', gameRoomMap.get(data.room).roomUserInfo);
+            io.to(data.room).emit('changeRoomInfo', gameRoomMap.get(data.room).roomUserInfo);
         }
     });
 
@@ -74,11 +74,10 @@ io.on('connection', function (socket) {
                 delete roomUserInfo.guest;
             }
 
-
             if(typeof roomUserInfo.host === 'undefined' && typeof roomUserInfo.guest === 'undefined' ){
                 gameRoomMap.delete(data.room);
             }
-
+            io.to(data.room).emit('clearTimeout',{});
             io.to(data.room).emit('changeRoomInfo', roomUserInfo);
             io.to(data.room).emit('boardInit', {});
             io.to(data.room).emit('initOmokUserInfo', roomUserInfo);
@@ -96,7 +95,7 @@ io.on('connection', function (socket) {
             x : data.x,
             y : data.y
         });
-
+        io.to(data.room).emit('clearTimeout',{});
         io.to(data.room).emit('getBoard', data);
         io.to(data.room).emit('setGameText', data);
     })
@@ -110,22 +109,28 @@ io.on('connection', function (socket) {
     })
 
     socket.on('allReady', (data) => {
-        const num = Math.floor(Math.random() * 10);
-        let role = num > 4 ? 'host' : 'guest';
+        if(data.role === 'host'){
+            const num = Math.floor(Math.random() * 10);
+            let role = num > 4 ? 'host' : 'guest';
 
-        io.to(data.room).emit('gameStart', {
-            'role' : role
-        });
+            io.to(data.room).emit('gameStart', {
+                'role' : role
+            });
 
-        io.to(data.room).emit('gameBoardStart', {
-            'role' : role
-        });
-    })
+            io.to(data.room).emit('gameBoardStart', {
+                'role' : role
+            });
+        }
+    });
 
     socket.on('endGame',(data) => {
         let roomUserInfo = gameRoomMap.get(data.room).roomUserInfo;
         roomUserInfo.host.isReady = false;
-        roomUserInfo.guest.isReady = false;
+        if(typeof roomUserInfo.guest !== 'undefined'){
+            roomUserInfo.guest.isReady = false;
+        }
+
+        io.to(data.room).emit('clearTimeout');
         io.to(data.room).emit('boardInit', {});
         io.to(data.room).emit('initOmokUserInfo', roomUserInfo);
     })
